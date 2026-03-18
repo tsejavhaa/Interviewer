@@ -47,3 +47,6 @@ Thumbs.db
 # Environment variables
 .env
 .env.local
+
+# Folder
+models/
