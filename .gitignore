@@ -48,5 +48,9 @@ Thumbs.db
 .env
 .env.local
 
-# Folder
+# ML models
 models/
+*.bin
+*.pt
+*.ckpt
+*.safetensors
