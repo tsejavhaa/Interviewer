@@ -53,4 +53,4 @@ models/
 *.bin
 *.pt
 *.ckpt
-*.safetensors
+*.safetensorsmodels/
