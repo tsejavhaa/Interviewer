@@ -1,0 +1,1904 @@
+{
+  "dataset": "ml_interview_questions",
+  "count": 300,
+  "questions": [
+    {
+      "id": "MLQ-0001",
+      "Question": "What is Machine Learning?",
+      "Answer": "Machine Learning is a field of artificial intelligence where systems learn patterns from data rather than being explicitly programmed. A model is trained using historical data to identify relationships between inputs and outputs. Once trained, the model can make predictions on new unseen data. The key idea is generalization — learning underlying patterns rather than memorizing examples.",
+      "Difficulty": "Junior",
+      "Tags": ["machine learning", "fundamentals"]
+    },
+    {
+      "id": "MLQ-0002",
+      "Question": "What is supervised learning?",
+      "Answer": "Supervised learning is a type of machine learning where the model is trained on labeled data. Each training example contains both input features and a known output label. The algorithm learns a mapping function from inputs to outputs so it can predict the correct label for new data. Common supervised tasks include classification and regression.",
+      "Difficulty": "Junior",
+      "Tags": ["supervised learning", "fundamentals"]
+    },
+    {
+      "id": "MLQ-0003",
+      "Question": "What is unsupervised learning?",
+      "Answer": "Unsupervised learning works with data that has no labels. The goal is to discover hidden patterns or structures within the data. Algorithms attempt to group similar data points together or learn compressed representations. Common tasks include clustering and dimensionality reduction.",
+      "Difficulty": "Junior",
+      "Tags": ["unsupervised learning"]
+    },
+    {
+      "id": "MLQ-0004",
+      "Question": "What is overfitting?",
+      "Answer": "Overfitting occurs when a model learns the training data too well, including noise and random fluctuations. This results in very high performance on training data but poor performance on new unseen data. Overfitting usually happens when a model is too complex relative to the amount of data available.",
+      "Difficulty": "Junior",
+      "Tags": ["overfitting", "model generalization"]
+    },
+    {
+      "id": "MLQ-0005",
+      "Question": "What is underfitting?",
+      "Answer": "Underfitting occurs when a model is too simple to capture the underlying patterns in the data. As a result, the model performs poorly on both training and test datasets. This often happens when the model lacks sufficient complexity or important features.",
+      "Difficulty": "Junior",
+      "Tags": ["underfitting", "bias"]
+    },
+    {
+      "id": "MLQ-0006",
+      "Question": "Explain the bias-variance tradeoff.",
+      "Answer": "Bias represents error caused by overly simplistic assumptions in the learning algorithm, while variance represents sensitivity to fluctuations in the training data. A model with high bias underfits, while a model with high variance overfits. The goal is to find a balance that minimizes total prediction error.",
+      "Difficulty": "Mid",
+      "Tags": ["bias variance", "model theory"]
+    },
+    {
+      "id": "MLQ-0007",
+      "Question": "Why do we split data into training, validation, and test sets?",
+      "Answer": "The training set is used to learn model parameters. The validation set is used for tuning hyperparameters and model selection. The test set is used for final evaluation to estimate how well the model will perform on unseen data. This separation prevents data leakage and ensures reliable evaluation.",
+      "Difficulty": "Junior",
+      "Tags": ["evaluation", "train test split"]
+    },
+    {
+      "id": "MLQ-0008",
+      "Question": "What is cross-validation?",
+      "Answer": "Cross-validation is a technique used to estimate model performance more reliably. The dataset is divided into multiple folds, and the model is trained and evaluated multiple times using different train-test splits. The results are averaged to provide a more robust performance estimate.",
+      "Difficulty": "Mid",
+      "Tags": ["cross validation", "evaluation"]
+    },
+    {
+      "id": "MLQ-0009",
+      "Question": "What is accuracy and when can it be misleading?",
+      "Answer": "Accuracy measures the percentage of correct predictions out of total predictions. It can be misleading when working with imbalanced datasets. For example, if 95% of data belongs to one class, a model that always predicts that class will achieve 95% accuracy without actually learning meaningful patterns.",
+      "Difficulty": "Junior",
+      "Tags": ["metrics", "accuracy"]
+    },
+    {
+      "id": "MLQ-0010",
+      "Question": "What are precision and recall?",
+      "Answer": "Precision measures how many predicted positive cases are actually positive. Recall measures how many real positive cases are correctly identified by the model. Precision focuses on minimizing false positives while recall focuses on minimizing false negatives.",
+      "Difficulty": "Junior",
+      "Tags": ["metrics", "precision", "recall"]
+    },
+    {
+      "id": "MLQ-0011",
+      "Question": "What is the F1 score?",
+      "Answer": "The F1 score is the harmonic mean of precision and recall. It balances both metrics and is especially useful when dealing with imbalanced datasets where accuracy alone may not reflect true model performance.",
+      "Difficulty": "Junior",
+      "Tags": ["metrics", "f1 score"]
+    },
+    {
+      "id": "MLQ-0012",
+      "Question": "How does linear regression work?",
+      "Answer": "Linear regression models the relationship between input variables and a continuous target variable by fitting a linear equation. The algorithm finds coefficients that minimize the difference between predicted and actual values, typically using mean squared error.",
+      "Difficulty": "Junior",
+      "Tags": ["regression", "linear regression"]
+    },
+    {
+      "id": "MLQ-0013",
+      "Question": "What is logistic regression?",
+      "Answer": "Logistic regression is a classification algorithm that predicts probabilities using a logistic (sigmoid) function. It maps input features to a probability value between 0 and 1, which can then be converted into class labels.",
+      "Difficulty": "Junior",
+      "Tags": ["classification", "logistic regression"]
+    },
+    {
+      "id": "MLQ-0014",
+      "Question": "What is gradient descent?",
+      "Answer": "Gradient descent is an optimization algorithm used to minimize the loss function of a model. It works by computing the gradient of the loss with respect to model parameters and updating the parameters in the direction that reduces the loss.",
+      "Difficulty": "Mid",
+      "Tags": ["optimization", "gradient descent"]
+    },
+    {
+      "id": "MLQ-0015",
+      "Question": "What is a learning rate?",
+      "Answer": "The learning rate controls how large a step the optimization algorithm takes when updating model parameters. A learning rate that is too high may cause the model to diverge, while a very small learning rate may slow down training significantly.",
+      "Difficulty": "Junior",
+      "Tags": ["optimization", "training"]
+    },
+
+    {
+      "id": "MLQ-0016",
+      "Question": "What is regularization in machine learning?",
+      "Answer": "Regularization is a technique used to prevent overfitting by adding a penalty term to the loss function. This discourages overly complex models and helps the model generalize better to unseen data.",
+      "Difficulty": "Mid",
+      "Tags": ["regularization"]
+    },
+    {
+      "id": "MLQ-0017",
+      "Question": "What is the difference between L1 and L2 regularization?",
+      "Answer": "L1 regularization adds the absolute value of coefficients as a penalty, encouraging sparse models with many coefficients becoming zero. L2 regularization adds the squared magnitude of coefficients and tends to shrink weights evenly without making them exactly zero.",
+      "Difficulty": "Mid",
+      "Tags": ["regularization", "lasso", "ridge"]
+    },
+    {
+      "id": "MLQ-0018",
+      "Question": "What is early stopping?",
+      "Answer": "Early stopping is a technique used during model training where training is halted when performance on a validation dataset stops improving. This prevents the model from overfitting the training data.",
+      "Difficulty": "Mid",
+      "Tags": ["regularization", "training"]
+    },
+    {
+      "id": "MLQ-0019",
+      "Question": "What is dropout?",
+      "Answer": "Dropout is a regularization technique used in neural networks where a random subset of neurons is ignored during each training iteration. This prevents neurons from relying too heavily on each other and improves generalization.",
+      "Difficulty": "Mid",
+      "Tags": ["deep learning", "dropout"]
+    },
+    {
+      "id": "MLQ-0020",
+      "Question": "What is data augmentation?",
+      "Answer": "Data augmentation increases the size and diversity of training datasets by applying transformations such as rotation, flipping, or noise addition. This helps models generalize better when training data is limited.",
+      "Difficulty": "Junior",
+      "Tags": ["data augmentation", "computer vision"]
+    },
+
+    {
+      "id": "MLQ-0021",
+      "Question": "What is a decision tree?",
+      "Answer": "A decision tree is a supervised learning algorithm that makes predictions by splitting data based on feature values. Each internal node represents a decision rule, and each leaf node represents a predicted outcome.",
+      "Difficulty": "Junior",
+      "Tags": ["decision tree"]
+    },
+    {
+      "id": "MLQ-0022",
+      "Question": "What is information gain?",
+      "Answer": "Information gain measures how much uncertainty is reduced after splitting a dataset based on a particular feature. It is commonly used in decision trees to select the best split.",
+      "Difficulty": "Mid",
+      "Tags": ["decision tree", "entropy"]
+    },
+    {
+      "id": "MLQ-0023",
+      "Question": "What is Gini impurity?",
+      "Answer": "Gini impurity measures the probability of incorrectly classifying a randomly chosen element if it were labeled according to the distribution of labels in the dataset.",
+      "Difficulty": "Mid",
+      "Tags": ["decision tree", "gini"]
+    },
+    {
+      "id": "MLQ-0024",
+      "Question": "What is Random Forest?",
+      "Answer": "Random Forest is an ensemble learning method that combines many decision trees trained on random subsets of data and features. The final prediction is typically the average or majority vote of the individual trees.",
+      "Difficulty": "Mid",
+      "Tags": ["random forest", "ensemble"]
+    },
+    {
+      "id": "MLQ-0025",
+      "Question": "What is bagging?",
+      "Answer": "Bagging (Bootstrap Aggregating) is an ensemble technique that trains multiple models on different bootstrapped subsets of data and combines their predictions to reduce variance.",
+      "Difficulty": "Mid",
+      "Tags": ["bagging", "ensemble"]
+    },
+
+    {
+      "id": "MLQ-0026",
+      "Question": "What is boosting?",
+      "Answer": "Boosting is an ensemble technique that trains models sequentially, where each new model focuses on correcting errors made by previous models. Examples include AdaBoost and Gradient Boosting.",
+      "Difficulty": "Mid",
+      "Tags": ["boosting", "ensemble"]
+    },
+    {
+      "id": "MLQ-0027",
+      "Question": "What is XGBoost?",
+      "Answer": "XGBoost is an optimized gradient boosting framework designed for speed and performance. It includes features such as regularization, parallel processing, and handling missing values efficiently.",
+      "Difficulty": "Mid",
+      "Tags": ["xgboost", "boosting"]
+    },
+    {
+      "id": "MLQ-0028",
+      "Question": "What is feature importance?",
+      "Answer": "Feature importance measures how much each feature contributes to model predictions. It helps identify which variables are most influential in a model.",
+      "Difficulty": "Junior",
+      "Tags": ["feature importance"]
+    },
+    {
+      "id": "MLQ-0029",
+      "Question": "What is ensemble learning?",
+      "Answer": "Ensemble learning combines multiple models to produce a stronger overall model. By aggregating predictions, ensembles can reduce variance, bias, or both.",
+      "Difficulty": "Mid",
+      "Tags": ["ensemble"]
+    },
+    {
+      "id": "MLQ-0030",
+      "Question": "What is model generalization?",
+      "Answer": "Generalization refers to a model's ability to perform well on unseen data rather than just the training dataset. A well-generalized model captures true patterns instead of memorizing training data.",
+      "Difficulty": "Junior",
+      "Tags": ["generalization"]
+    },
+
+    {
+      "id": "MLQ-0031",
+      "Question": "What is a neural network?",
+      "Answer": "A neural network is a computational model inspired by the human brain. It consists of layers of interconnected neurons that process input data through weighted connections and activation functions to produce predictions.",
+      "Difficulty": "Junior",
+      "Tags": ["neural network", "deep learning"]
+    },
+    {
+      "id": "MLQ-0032",
+      "Question": "What is an activation function?",
+      "Answer": "Activation functions introduce non-linearity into neural networks, allowing them to model complex patterns. Without them, neural networks would behave like simple linear models.",
+      "Difficulty": "Junior",
+      "Tags": ["activation function"]
+    },
+    {
+      "id": "MLQ-0033",
+      "Question": "What is ReLU?",
+      "Answer": "ReLU (Rectified Linear Unit) is a commonly used activation function that outputs zero for negative values and the input value for positive values. It helps mitigate vanishing gradient issues and speeds up training.",
+      "Difficulty": "Junior",
+      "Tags": ["relu", "activation"]
+    },
+    {
+      "id": "MLQ-0034",
+      "Question": "What is backpropagation?",
+      "Answer": "Backpropagation is the algorithm used to train neural networks by computing gradients of the loss function with respect to model parameters and propagating errors backward through the network.",
+      "Difficulty": "Mid",
+      "Tags": ["backpropagation", "training"]
+    },
+    {
+      "id": "MLQ-0035",
+      "Question": "What is batch normalization?",
+      "Answer": "Batch normalization normalizes inputs within each mini-batch during training. This stabilizes learning and allows higher learning rates.",
+      "Difficulty": "Mid",
+      "Tags": ["batch normalization"]
+    },
+
+    {
+      "id": "MLQ-0036",
+      "Question": "What is a Convolutional Neural Network (CNN)?",
+      "Answer": "CNNs are neural networks designed for image data. They use convolution operations to detect spatial patterns such as edges, shapes, and textures.",
+      "Difficulty": "Mid",
+      "Tags": ["cnn", "computer vision"]
+    },
+    {
+      "id": "MLQ-0037",
+      "Question": "What is a Recurrent Neural Network (RNN)?",
+      "Answer": "RNNs are neural networks designed for sequential data. They maintain a hidden state that allows information from previous steps to influence current predictions.",
+      "Difficulty": "Mid",
+      "Tags": ["rnn", "sequence models"]
+    },
+    {
+      "id": "MLQ-0038",
+      "Question": "What problem do LSTMs solve?",
+      "Answer": "LSTMs address the vanishing gradient problem in standard RNNs by using gated memory cells that allow information to persist over long sequences.",
+      "Difficulty": "Mid",
+      "Tags": ["lstm", "sequence models"]
+    },
+    {
+      "id": "MLQ-0039",
+      "Question": "What is the attention mechanism?",
+      "Answer": "Attention allows models to focus on the most relevant parts of input data when generating predictions. It is widely used in modern NLP architectures like Transformers.",
+      "Difficulty": "Mid",
+      "Tags": ["attention", "transformers"]
+    },
+    {
+      "id": "MLQ-0040",
+      "Question": "What is a Transformer model?",
+      "Answer": "Transformers are deep learning architectures that rely on self-attention mechanisms instead of recurrence or convolution. They process entire sequences in parallel and are the foundation of modern language models like BERT and GPT.",
+      "Difficulty": "Mid",
+      "Tags": ["transformer", "nlp"]
+    },
+
+    {
+      "id": "MLQ-0041",
+      "Question": "What is data leakage?",
+      "Answer": "Data leakage occurs when information from outside the training dataset is used to create the model, leading to overly optimistic evaluation results. This often happens when future information accidentally enters training features.",
+      "Difficulty": "Senior",
+      "Tags": ["data leakage", "evaluation"]
+    },
+    {
+      "id": "MLQ-0042",
+      "Question": "What is concept drift?",
+      "Answer": "Concept drift occurs when the statistical relationship between inputs and outputs changes over time. This causes model performance to degrade in production environments.",
+      "Difficulty": "Senior",
+      "Tags": ["concept drift", "mlops"]
+    },
+    {
+      "id": "MLQ-0043",
+      "Question": "Why is model monitoring important?",
+      "Answer": "Model monitoring tracks performance after deployment. It helps detect issues such as data drift, prediction errors, and infrastructure failures.",
+      "Difficulty": "Senior",
+      "Tags": ["mlops", "monitoring"]
+    },
+    {
+      "id": "MLQ-0044",
+      "Question": "What is A/B testing in machine learning?",
+      "Answer": "A/B testing compares two versions of a model in production to measure which performs better using real user data.",
+      "Difficulty": "Senior",
+      "Tags": ["ab testing", "production ml"]
+    },
+    {
+      "id": "MLQ-0045",
+      "Question": "What is an ML pipeline?",
+      "Answer": "An ML pipeline is an automated workflow that manages the process from data collection and preprocessing to model training, evaluation, and deployment.",
+      "Difficulty": "Senior",
+      "Tags": ["ml pipeline", "mlops"]
+    },
+    {
+      "id": "MLQ-0046",
+      "Question": "What is feature engineering?",
+      "Answer": "Feature engineering involves transforming raw data into meaningful features that improve model performance.",
+      "Difficulty": "Junior",
+      "Tags": ["feature engineering"]
+    },
+    {
+      "id": "MLQ-0047",
+      "Question": "What is inference in machine learning?",
+      "Answer": "Inference is the process of using a trained model to make predictions on new input data.",
+      "Difficulty": "Junior",
+      "Tags": ["inference"]
+    },
+    {
+      "id": "MLQ-0048",
+      "Question": "What is batch inference?",
+      "Answer": "Batch inference processes large sets of data at scheduled intervals instead of making predictions instantly.",
+      "Difficulty": "Junior",
+      "Tags": ["batch inference"]
+    },
+    {
+      "id": "MLQ-0049",
+      "Question": "What is real-time inference?",
+      "Answer": "Real-time inference generates predictions immediately when new input data is received, typically through APIs.",
+      "Difficulty": "Mid",
+      "Tags": ["real time inference"]
+    },
+    {
+      "id": "MLQ-0050",
+      "Question": "Why is retraining important for ML models?",
+      "Answer": "Retraining updates the model using new data to maintain performance as data distributions change over time.",
+      "Difficulty": "Senior",
+      "Tags": ["retraining", "ml lifecycle"]
+    },
+    {
+      "id": "MLQ-0051",
+      "Question": "What is feature scaling and why is it important?",
+      "Answer": "Feature scaling transforms numerical features into a similar range so that no single feature dominates the learning process. Algorithms based on distance or gradient optimization such as KNN, SVM, and neural networks perform better when features are scaled because gradients converge faster and distances become meaningful.",
+      "Difficulty": "Junior",
+      "Tags": ["feature scaling", "preprocessing"]
+    },
+    {
+      "id": "MLQ-0052",
+      "Question": "What is normalization vs standardization?",
+      "Answer": "Normalization rescales data into a fixed range, usually between 0 and 1. Standardization transforms data so it has zero mean and unit variance. Normalization is useful when bounds are known, while standardization is commonly used when data follows a Gaussian-like distribution.",
+      "Difficulty": "Junior",
+      "Tags": ["normalization", "standardization"]
+    },
+    {
+      "id": "MLQ-0053",
+      "Question": "What is missing data handling?",
+      "Answer": "Handling missing data involves strategies such as removing rows, filling values using statistical measures like mean or median, or predicting missing values using models. Proper handling prevents biased training and instability in algorithms.",
+      "Difficulty": "Junior",
+      "Tags": ["data preprocessing"]
+    },
+    {
+      "id": "MLQ-0054",
+      "Question": "What is one-hot encoding?",
+      "Answer": "One-hot encoding converts categorical variables into binary vectors where each category becomes a separate feature column. This prevents algorithms from assuming ordinal relationships between categories.",
+      "Difficulty": "Junior",
+      "Tags": ["encoding", "categorical data"]
+    },
+    {
+      "id": "MLQ-0055",
+      "Question": "What is label encoding and when is it risky?",
+      "Answer": "Label encoding assigns integer values to categories. It can be risky because models may interpret numeric order where none exists, which may negatively affect distance-based or linear models.",
+      "Difficulty": "Junior",
+      "Tags": ["encoding"]
+    },
+    {
+      "id": "MLQ-0056",
+      "Question": "What is dimensionality reduction?",
+      "Answer": "Dimensionality reduction reduces the number of input features while preserving important information. It helps improve computation speed, reduce overfitting, and remove noise from high-dimensional datasets.",
+      "Difficulty": "Mid",
+      "Tags": ["dimensionality reduction"]
+    },
+    {
+      "id": "MLQ-0057",
+      "Question": "Explain PCA.",
+      "Answer": "Principal Component Analysis transforms data into new orthogonal axes called principal components that capture maximum variance. It projects high-dimensional data into lower dimensions while retaining important structure.",
+      "Difficulty": "Mid",
+      "Tags": ["PCA", "dimensionality reduction"]
+    },
+    {
+      "id": "MLQ-0058",
+      "Question": "What is t-SNE used for?",
+      "Answer": "t-SNE is a nonlinear dimensionality reduction technique mainly used for visualization of high-dimensional data. It preserves local relationships between points, making clusters easier to visualize in 2D or 3D.",
+      "Difficulty": "Mid",
+      "Tags": ["t-SNE", "visualization"]
+    },
+    {
+      "id": "MLQ-0059",
+      "Question": "What is K-Means clustering?",
+      "Answer": "K-Means is an unsupervised algorithm that partitions data into K clusters by minimizing the distance between points and cluster centroids. It iteratively updates cluster centers until convergence.",
+      "Difficulty": "Junior",
+      "Tags": ["clustering", "kmeans"]
+    },
+    {
+      "id": "MLQ-0060",
+      "Question": "How do you choose K in K-Means?",
+      "Answer": "The number of clusters can be chosen using methods like the elbow method, silhouette score, or domain knowledge. These methods evaluate how well-separated clusters are.",
+      "Difficulty": "Mid",
+      "Tags": ["clustering evaluation"]
+    },
+
+    {
+      "id": "MLQ-0061",
+      "Question": "What is hierarchical clustering?",
+      "Answer": "Hierarchical clustering builds nested clusters either by merging smaller clusters (agglomerative) or splitting larger ones (divisive). It produces a dendrogram representing cluster relationships.",
+      "Difficulty": "Mid",
+      "Tags": ["clustering"]
+    },
+    {
+      "id": "MLQ-0062",
+      "Question": "What is DBSCAN?",
+      "Answer": "DBSCAN is a density-based clustering algorithm that groups points based on dense regions and identifies noise points as outliers. It does not require specifying the number of clusters beforehand.",
+      "Difficulty": "Mid",
+      "Tags": ["dbscan", "clustering"]
+    },
+    {
+      "id": "MLQ-0063",
+      "Question": "What is cosine similarity?",
+      "Answer": "Cosine similarity measures similarity between vectors based on the cosine of the angle between them. It is widely used in NLP and recommendation systems where magnitude is less important than direction.",
+      "Difficulty": "Junior",
+      "Tags": ["similarity", "nlp"]
+    },
+    {
+      "id": "MLQ-0064",
+      "Question": "What is Euclidean distance?",
+      "Answer": "Euclidean distance calculates the straight-line distance between two points in feature space. Many algorithms such as KNN rely on it to measure similarity.",
+      "Difficulty": "Junior",
+      "Tags": ["distance metric"]
+    },
+    {
+      "id": "MLQ-0065",
+      "Question": "What is K-Nearest Neighbors (KNN)?",
+      "Answer": "KNN is a non-parametric algorithm that predicts labels based on the majority class or average value of the nearest K data points in feature space.",
+      "Difficulty": "Junior",
+      "Tags": ["knn"]
+    },
+    {
+      "id": "MLQ-0066",
+      "Question": "What are disadvantages of KNN?",
+      "Answer": "KNN is computationally expensive at inference time, sensitive to feature scaling, and performs poorly in high-dimensional spaces due to the curse of dimensionality.",
+      "Difficulty": "Mid",
+      "Tags": ["knn", "limitations"]
+    },
+    {
+      "id": "MLQ-0067",
+      "Question": "What is the curse of dimensionality?",
+      "Answer": "As dimensionality increases, data points become sparse and distance measures lose meaning. This negatively affects algorithms relying on distance calculations.",
+      "Difficulty": "Mid",
+      "Tags": ["high dimensional data"]
+    },
+    {
+      "id": "MLQ-0068",
+      "Question": "What is a support vector machine (SVM)?",
+      "Answer": "SVM is a supervised algorithm that finds an optimal boundary maximizing the margin between classes. It can use kernel functions to model nonlinear relationships.",
+      "Difficulty": "Mid",
+      "Tags": ["svm"]
+    },
+    {
+      "id": "MLQ-0069",
+      "Question": "What is a kernel trick?",
+      "Answer": "The kernel trick maps data into higher-dimensional space without explicitly computing coordinates, allowing linear algorithms to solve nonlinear problems efficiently.",
+      "Difficulty": "Senior",
+      "Tags": ["svm", "kernel"]
+    },
+    {
+      "id": "MLQ-0070",
+      "Question": "What is hyperparameter tuning?",
+      "Answer": "Hyperparameter tuning involves selecting optimal configuration values such as learning rate or tree depth using validation methods like grid search or random search.",
+      "Difficulty": "Mid",
+      "Tags": ["hyperparameters"]
+    },
+
+    {
+      "id": "MLQ-0071",
+      "Question": "What is grid search?",
+      "Answer": "Grid search evaluates all possible combinations of predefined hyperparameters to find the best-performing configuration.",
+      "Difficulty": "Junior",
+      "Tags": ["grid search"]
+    },
+    {
+      "id": "MLQ-0072",
+      "Question": "What is random search?",
+      "Answer": "Random search samples random combinations of hyperparameters. It is often more efficient than grid search when only a few parameters strongly influence performance.",
+      "Difficulty": "Junior",
+      "Tags": ["random search"]
+    },
+    {
+      "id": "MLQ-0073",
+      "Question": "What is Bayesian optimization?",
+      "Answer": "Bayesian optimization builds a probabilistic model of performance and selects promising hyperparameters intelligently rather than testing randomly.",
+      "Difficulty": "Senior",
+      "Tags": ["bayesian optimization"]
+    },
+    {
+      "id": "MLQ-0074",
+      "Question": "What is transfer learning?",
+      "Answer": "Transfer learning reuses knowledge learned from a pretrained model on a large dataset and adapts it to a new related task, reducing training time and data requirements.",
+      "Difficulty": "Mid",
+      "Tags": ["transfer learning"]
+    },
+    {
+      "id": "MLQ-0075",
+      "Question": "What is fine-tuning?",
+      "Answer": "Fine-tuning involves continuing training of a pretrained model on a smaller task-specific dataset while adjusting weights slightly for better specialization.",
+      "Difficulty": "Mid",
+      "Tags": ["fine tuning"]
+    },
+
+    {
+      "id": "MLQ-0076",
+      "Question": "What is embedding in machine learning?",
+      "Answer": "Embeddings are dense vector representations of data such as words or images that capture semantic relationships in continuous space.",
+      "Difficulty": "Mid",
+      "Tags": ["embeddings", "representation learning"]
+    },
+    {
+      "id": "MLQ-0077",
+      "Question": "What is word embedding?",
+      "Answer": "Word embeddings map words into vectors where semantically similar words appear closer together. Examples include Word2Vec and GloVe.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp", "word embedding"]
+    },
+    {
+      "id": "MLQ-0078",
+      "Question": "What is tokenization in NLP?",
+      "Answer": "Tokenization splits text into smaller units such as words or subwords so models can process language numerically.",
+      "Difficulty": "Junior",
+      "Tags": ["nlp preprocessing"]
+    },
+    {
+      "id": "MLQ-0079",
+      "Question": "What is stemming vs lemmatization?",
+      "Answer": "Stemming removes word endings using heuristic rules, while lemmatization converts words into their dictionary base forms using linguistic knowledge.",
+      "Difficulty": "Junior",
+      "Tags": ["nlp preprocessing"]
+    },
+    {
+      "id": "MLQ-0080",
+      "Question": "What is TF-IDF?",
+      "Answer": "TF-IDF measures word importance by balancing term frequency with inverse document frequency, reducing influence of common words.",
+      "Difficulty": "Junior",
+      "Tags": ["tfidf", "nlp"]
+    },
+
+    {
+      "id": "MLQ-0081",
+      "Question": "What is perplexity in language models?",
+      "Answer": "Perplexity measures how well a probability model predicts text. Lower perplexity indicates better predictive performance.",
+      "Difficulty": "Senior",
+      "Tags": ["language models"]
+    },
+    {
+      "id": "MLQ-0082",
+      "Question": "What is BLEU score?",
+      "Answer": "BLEU evaluates machine translation quality by comparing generated text with reference translations using n-gram overlap.",
+      "Difficulty": "Senior",
+      "Tags": ["nlp evaluation"]
+    },
+    {
+      "id": "MLQ-0083",
+      "Question": "What is ROUGE score?",
+      "Answer": "ROUGE evaluates summarization models by measuring overlap between generated summaries and reference summaries.",
+      "Difficulty": "Senior",
+      "Tags": ["nlp evaluation"]
+    },
+    {
+      "id": "MLQ-0084",
+      "Question": "What is confusion matrix?",
+      "Answer": "A confusion matrix shows prediction outcomes including true positives, false positives, true negatives, and false negatives, helping analyze classifier performance.",
+      "Difficulty": "Junior",
+      "Tags": ["evaluation"]
+    },
+    {
+      "id": "MLQ-0085",
+      "Question": "What is ROC curve?",
+      "Answer": "ROC curve plots true positive rate against false positive rate across thresholds, showing classification performance.",
+      "Difficulty": "Mid",
+      "Tags": ["metrics", "roc"]
+    },
+
+    {
+      "id": "MLQ-0086",
+      "Question": "What is AUC?",
+      "Answer": "AUC measures the area under the ROC curve and represents how well a model distinguishes between classes.",
+      "Difficulty": "Mid",
+      "Tags": ["auc"]
+    },
+    {
+      "id": "MLQ-0087",
+      "Question": "What is calibration in ML models?",
+      "Answer": "Calibration ensures predicted probabilities reflect true likelihoods. A calibrated model predicting 0.8 probability should be correct about 80% of the time.",
+      "Difficulty": "Senior",
+      "Tags": ["probability calibration"]
+    },
+    {
+      "id": "MLQ-0088",
+      "Question": "What is explainable AI (XAI)?",
+      "Answer": "Explainable AI focuses on making model decisions interpretable using methods such as SHAP or LIME to understand feature contributions.",
+      "Difficulty": "Senior",
+      "Tags": ["xai"]
+    },
+    {
+      "id": "MLQ-0089",
+      "Question": "What is SHAP?",
+      "Answer": "SHAP values quantify each feature's contribution to a prediction based on cooperative game theory principles.",
+      "Difficulty": "Senior",
+      "Tags": ["shap", "explainability"]
+    },
+    {
+      "id": "MLQ-0090",
+      "Question": "What is LIME?",
+      "Answer": "LIME explains individual predictions by approximating a complex model locally with a simpler interpretable model.",
+      "Difficulty": "Senior",
+      "Tags": ["lime", "interpretability"]
+    },
+
+    {
+      "id": "MLQ-0091",
+      "Question": "What is model deployment?",
+      "Answer": "Model deployment is the process of integrating a trained ML model into production systems where it can serve predictions to users or applications.",
+      "Difficulty": "Mid",
+      "Tags": ["deployment", "mlops"]
+    },
+    {
+      "id": "MLQ-0092",
+      "Question": "What is model versioning?",
+      "Answer": "Model versioning tracks changes in models, datasets, and configurations to ensure reproducibility and safe updates.",
+      "Difficulty": "Senior",
+      "Tags": ["mlops"]
+    },
+    {
+      "id": "MLQ-0093",
+      "Question": "What is reproducibility in ML?",
+      "Answer": "Reproducibility ensures experiments can be repeated with identical results by controlling randomness, dependencies, and dataset versions.",
+      "Difficulty": "Senior",
+      "Tags": ["experimentation"]
+    },
+    {
+      "id": "MLQ-0094",
+      "Question": "What is data drift?",
+      "Answer": "Data drift occurs when input data distributions change over time compared to training data, potentially reducing model accuracy.",
+      "Difficulty": "Senior",
+      "Tags": ["data drift"]
+    },
+    {
+      "id": "MLQ-0095",
+      "Question": "What is prediction drift?",
+      "Answer": "Prediction drift happens when output prediction distributions change even if input distributions appear stable.",
+      "Difficulty": "Senior",
+      "Tags": ["ml monitoring"]
+    },
+    {
+      "id": "MLQ-0096",
+      "Question": "What is online learning?",
+      "Answer": "Online learning updates models incrementally as new data arrives instead of retraining from scratch.",
+      "Difficulty": "Senior",
+      "Tags": ["online learning"]
+    },
+    {
+      "id": "MLQ-0097",
+      "Question": "What is batch learning?",
+      "Answer": "Batch learning trains models using the entire dataset at once and retrains periodically with new data.",
+      "Difficulty": "Junior",
+      "Tags": ["training strategy"]
+    },
+    {
+      "id": "MLQ-0098",
+      "Question": "What is federated learning?",
+      "Answer": "Federated learning trains models across decentralized devices while keeping raw data locally, improving privacy.",
+      "Difficulty": "Senior",
+      "Tags": ["federated learning"]
+    },
+    {
+      "id": "MLQ-0099",
+      "Question": "What is reinforcement learning?",
+      "Answer": "Reinforcement learning trains agents through interaction with environments using rewards and penalties to learn optimal actions.",
+      "Difficulty": "Mid",
+      "Tags": ["reinforcement learning"]
+    },
+    {
+      "id": "MLQ-0100",
+      "Question": "What is the exploration vs exploitation tradeoff?",
+      "Answer": "Exploration involves trying new actions to gain knowledge, while exploitation uses known actions that yield high reward. Balancing both is critical for efficient reinforcement learning.",
+      "Difficulty": "Senior",
+      "Tags": ["reinforcement learning"]
+    },
+    {
+    "Question": "Explain bias–variance decomposition mathematically and how it impacts model generalization.",
+    "Answer": "Prediction error can be decomposed into bias² + variance + irreducible noise. Bias measures systematic error from simplifying assumptions, while variance measures sensitivity to training data fluctuations. High bias leads to underfitting, high variance to overfitting. Senior engineers manage this tradeoff via regularization, ensembling, architecture design, and data scaling strategies.",
+    "Difficulty": "Senior",
+    "Tags": ["theory", "generalization", "bias-variance", "statistics"]
+    },
+    {
+      "Question": "How does batch normalization stabilize deep neural network training?",
+      "Answer": "BatchNorm normalizes layer inputs using batch mean and variance, reducing internal covariate shift. It allows higher learning rates, stabilizes gradients, and acts as implicit regularization. During inference, moving averages replace batch statistics. Placement relative to activation functions affects performance.",
+      "Difficulty": "Senior",
+      "Tags": ["deep learning", "optimization", "neural networks"]
+    },
+    {
+      "Question": "Explain gradient explosion and gradient vanishing and modern solutions.",
+      "Answer": "Gradients shrink or grow exponentially during backpropagation through deep layers or time steps. Vanishing gradients prevent learning long dependencies; exploding gradients cause instability. Solutions include residual connections, gradient clipping, proper initialization, normalization layers, and gated architectures like LSTM/GRU.",
+      "Difficulty": "Senior",
+      "Tags": ["deep learning", "optimization", "training stability"]
+    },
+    {
+      "Question": "Why do residual connections work in very deep networks?",
+      "Answer": "Residual connections allow identity mappings so gradients can flow directly backward, preventing degradation problems. Instead of learning full transformations, layers learn residual corrections. This improves convergence and enables extremely deep architectures such as ResNet.",
+      "Difficulty": "Senior",
+      "Tags": ["deep learning", "architecture", "resnet"]
+    },
+    {
+      "Question": "Describe attention mechanism mathematically.",
+      "Answer": "Attention computes weighted combinations of values using similarity between queries and keys. Scores are computed via dot product, scaled, passed through softmax, then multiplied with values. This enables dynamic context selection and long-range dependency modeling.",
+      "Difficulty": "Senior",
+      "Tags": ["transformers", "attention", "nlp"]
+    },
+    {
+      "Question": "What problem does multi-head attention solve compared to single attention?",
+      "Answer": "Multiple attention heads learn different representation subspaces simultaneously, capturing syntactic, semantic, and positional relationships. This increases model expressiveness without drastically increasing computational complexity.",
+      "Difficulty": "Senior",
+      "Tags": ["transformers", "architecture"]
+    },
+    {
+      "Question": "Explain why transformers scale better than RNNs.",
+      "Answer": "Transformers process tokens in parallel using self-attention rather than sequential recurrence. This improves GPU utilization and enables modeling long dependencies without gradient decay across time steps.",
+      "Difficulty": "Senior",
+      "Tags": ["transformers", "sequence modeling"]
+    },
+    {
+      "Question": "What is the role of positional encoding in transformers?",
+      "Answer": "Since self-attention lacks inherent order awareness, positional encodings inject sequence position information using sinusoidal or learned embeddings, allowing models to understand token ordering.",
+      "Difficulty": "Senior",
+      "Tags": ["transformers", "representation learning"]
+    },
+    {
+      "Question": "Explain KL divergence and its use in machine learning.",
+      "Answer": "KL divergence measures how one probability distribution diverges from another. It is used in variational inference, VAEs, knowledge distillation, and policy optimization by minimizing distribution mismatch.",
+      "Difficulty": "Senior",
+      "Tags": ["probability", "information theory"]
+    },
+    {
+      "Question": "How does a Variational Autoencoder differ from a standard autoencoder?",
+      "Answer": "VAEs learn probabilistic latent distributions rather than deterministic encodings. Training optimizes reconstruction loss plus KL divergence regularization, enabling generative sampling from latent space.",
+      "Difficulty": "Senior",
+      "Tags": ["generative models", "vae"]
+    },
+    {
+      "Question": "Explain mode collapse in GANs and mitigation techniques.",
+      "Answer": "Mode collapse occurs when generator produces limited outputs regardless of input noise. Solutions include Wasserstein loss, gradient penalty, minibatch discrimination, spectral normalization, and improved training balance.",
+      "Difficulty": "Senior",
+      "Tags": ["gan", "generative models"]
+    },
+    {
+      "Question": "Why is Wasserstein loss more stable for GAN training?",
+      "Answer": "It measures Earth Mover distance between distributions, providing smoother gradients even when distributions do not overlap, improving convergence stability.",
+      "Difficulty": "Senior",
+      "Tags": ["gan", "optimization"]
+    },
+    {
+      "Question": "Explain self-supervised learning and its advantages.",
+      "Answer": "Models learn representations using surrogate tasks derived from data itself (mask prediction, contrastive learning). It reduces labeling dependency and enables large-scale pretraining.",
+      "Difficulty": "Senior",
+      "Tags": ["self-supervised learning", "representation learning"]
+    },
+    {
+      "Question": "Describe contrastive learning objective.",
+      "Answer": "Contrastive learning pulls representations of positive pairs together and pushes negatives apart using losses like InfoNCE. It learns discriminative embeddings without labels.",
+      "Difficulty": "Senior",
+      "Tags": ["representation learning", "contrastive learning"]
+    },
+    {
+      "Question": "Explain embedding collapse and prevention strategies.",
+      "Answer": "Embeddings become identical across samples, losing information. Prevented using normalization, temperature scaling, stop-gradient methods, or negative sampling.",
+      "Difficulty": "Senior",
+      "Tags": ["representation learning"]
+    },
+    {
+      "Question": "How do you evaluate embeddings quality?",
+      "Answer": "Using downstream task performance, clustering metrics, cosine similarity distributions, retrieval accuracy, visualization (t-SNE/UMAP), and probing classifiers.",
+      "Difficulty": "Senior",
+      "Tags": ["evaluation", "embeddings"]
+    },
+    {
+      "Question": "Explain distributed training strategies.",
+      "Answer": "Data parallelism splits batches across GPUs, model parallelism splits architecture, pipeline parallelism staggers computation. Gradient synchronization occurs via all-reduce communication.",
+      "Difficulty": "Senior",
+      "Tags": ["distributed training", "scaling"]
+    },
+    {
+      "Question": "What causes training instability in large models?",
+      "Answer": "Improper learning rate scaling, poor initialization, gradient noise, mixed precision errors, and data imbalance. Solutions include warmup schedules, adaptive optimizers, normalization, and gradient clipping.",
+      "Difficulty": "Senior",
+      "Tags": ["optimization", "large models"]
+    },
+    {
+      "Question": "Explain learning rate warmup.",
+      "Answer": "Training begins with small learning rates gradually increasing to stabilize early gradient updates, especially important for transformers and large batch training.",
+      "Difficulty": "Senior",
+      "Tags": ["optimization"]
+    },
+    {
+      "Question": "What is catastrophic forgetting?",
+      "Answer": "Neural networks forget previous tasks when trained sequentially. Mitigations include replay buffers, regularization constraints, parameter isolation, and continual learning methods.",
+      "Difficulty": "Senior",
+      "Tags": ["continual learning"]
+    },
+    {
+      "Question": "Explain transfer learning failure cases.",
+      "Answer": "Occurs when source and target domains differ significantly, causing negative transfer. Solutions include partial fine-tuning, domain adaptation, or feature freezing strategies.",
+      "Difficulty": "Senior",
+      "Tags": ["transfer learning"]
+    },
+    {
+      "Question": "What is domain adaptation?",
+      "Answer": "Techniques aligning feature distributions between source and target domains using adversarial training, feature alignment, or reweighting strategies.",
+      "Difficulty": "Senior",
+      "Tags": ["domain adaptation"]
+    },
+    {
+      "Question": "Explain label shift vs covariate shift.",
+      "Answer": "Covariate shift changes input distribution P(x); label shift changes class distribution P(y). Correction methods differ, requiring importance weighting or recalibration.",
+      "Difficulty": "Senior",
+      "Tags": ["distribution shift"]
+    },
+    {
+      "Question": "How do you detect data drift in production?",
+      "Answer": "Monitor statistical metrics, KL divergence, PSI scores, embedding distance, and performance decay using continuous monitoring pipelines.",
+      "Difficulty": "Senior",
+      "Tags": ["mlops", "monitoring"]
+    },
+    {
+      "Question": "Explain model calibration.",
+      "Answer": "Calibration ensures predicted probabilities match real likelihoods. Techniques include Platt scaling and isotonic regression.",
+      "Difficulty": "Senior",
+      "Tags": ["evaluation", "probability"]
+    },
+    {
+      "Question": "What is uncertainty estimation in ML?",
+      "Answer": "Measures confidence of predictions using Bayesian methods, ensembles, Monte Carlo dropout, or evidential networks.",
+      "Difficulty": "Senior",
+      "Tags": ["uncertainty", "bayesian"]
+    },
+    {
+      "Question": "Explain Bayesian neural networks conceptually.",
+      "Answer": "Weights are distributions instead of fixed values, enabling uncertainty modeling via posterior inference.",
+      "Difficulty": "Senior",
+      "Tags": ["bayesian deep learning"]
+    },
+    {
+      "Question": "What is knowledge distillation?",
+      "Answer": "A smaller student model learns from teacher soft predictions, preserving performance while reducing size.",
+      "Difficulty": "Senior",
+      "Tags": ["model compression"]
+    },
+    {
+      "Question": "Explain quantization in deep learning deployment.",
+      "Answer": "Reduces numerical precision (e.g., FP32→INT8) to improve inference speed and memory efficiency while maintaining acceptable accuracy.",
+      "Difficulty": "Senior",
+      "Tags": ["deployment", "optimization"]
+    },
+    {
+      "Question": "What is pruning in neural networks?",
+      "Answer": "Removing redundant weights or neurons to reduce model size and computation cost.",
+      "Difficulty": "Senior",
+      "Tags": ["model compression"]
+    },
+    {
+      "Question": "Explain retrieval-augmented generation (RAG).",
+      "Answer": "RAG combines retrieval systems with language models by fetching relevant documents and conditioning generation on external knowledge, improving factual accuracy.",
+      "Difficulty": "Senior",
+      "Tags": ["llm", "rag", "nlp"]
+    },
+    {
+      "Question": "How do you evaluate RAG systems?",
+      "Answer": "Measure retrieval recall, grounding accuracy, hallucination rate, answer correctness, and human evaluation.",
+      "Difficulty": "Senior",
+      "Tags": ["rag", "evaluation"]
+    },
+    {
+      "Question": "What causes hallucinations in LLMs?",
+      "Answer": "Training objective predicts plausible text rather than factual correctness. Lack of grounding and retrieval increases hallucination probability.",
+      "Difficulty": "Senior",
+      "Tags": ["llm", "nlp"]
+    },
+    {
+      "Question": "Explain tokenization impact on language models.",
+      "Answer": "Tokenization affects vocabulary efficiency, context length, and multilingual performance. Poor tokenization increases sequence length and training difficulty.",
+      "Difficulty": "Senior",
+      "Tags": ["nlp", "tokenization"]
+    },
+    {
+      "Question": "What is sparse attention?",
+      "Answer": "Attention computed only on selected tokens to reduce quadratic complexity, enabling longer contexts.",
+      "Difficulty": "Senior",
+      "Tags": ["transformers", "scaling"]
+    },
+    {
+      "Question": "Explain mixture-of-experts (MoE) models.",
+      "Answer": "Multiple expert subnetworks activate selectively per input, increasing parameter count without proportional compute cost.",
+      "Difficulty": "Senior",
+      "Tags": ["large models", "architecture"]
+    },
+    {
+      "Question": "What are scaling laws in deep learning?",
+      "Answer": "Performance improves predictably with increases in data, parameters, and compute following power-law relationships.",
+      "Difficulty": "Senior",
+      "Tags": ["scaling", "llm"]
+    },
+    {
+      "Question": "Explain curriculum learning.",
+      "Answer": "Training starts with easier examples and gradually increases difficulty, improving convergence and robustness.",
+      "Difficulty": "Senior",
+      "Tags": ["training strategy"]
+    },
+    {
+      "Question": "How do you debug a deep learning model that does not learn?",
+      "Answer": "Check data pipeline, label correctness, gradients, learning rate, overfit small batch test, and inspect activations.",
+      "Difficulty": "Senior",
+      "Tags": ["debugging"]
+    },
+    {
+      "Question": "Explain feature store role in ML systems.",
+      "Answer": "Centralized system storing reusable, versioned features ensuring training-serving consistency.",
+      "Difficulty": "Senior",
+      "Tags": ["mlops", "data engineering"]
+    },
+    {
+      "Question": "What is online learning?",
+      "Answer": "Model updates continuously with streaming data rather than batch retraining.",
+      "Difficulty": "Senior",
+      "Tags": ["online learning"]
+    },
+    {
+      "Question": "Explain reinforcement learning exploration vs exploitation.",
+      "Answer": "Agents balance trying new actions (exploration) with maximizing known rewards (exploitation) using policies like epsilon-greedy.",
+      "Difficulty": "Senior",
+      "Tags": ["reinforcement learning"]
+    },
+    {
+      "Question": "What is policy gradient method?",
+      "Answer": "Directly optimizes policy parameters by maximizing expected reward using gradient ascent.",
+      "Difficulty": "Senior",
+      "Tags": ["reinforcement learning"]
+    },
+    {
+      "Question": "Explain Q-learning instability with neural networks.",
+      "Answer": "Correlated samples and moving targets destabilize training. Solutions include replay buffers and target networks.",
+      "Difficulty": "Senior",
+      "Tags": ["reinforcement learning"]
+    },
+    {
+      "Question": "What is off-policy vs on-policy learning?",
+      "Answer": "Off-policy learns from past experiences regardless of policy used; on-policy learns only from current policy interactions.",
+      "Difficulty": "Senior",
+      "Tags": ["reinforcement learning"]
+    },
+    {
+      "Question": "Explain reward shaping risks.",
+      "Answer": "Improper reward design leads agents to exploit shortcuts rather than desired behaviors.",
+      "Difficulty": "Senior",
+      "Tags": ["reinforcement learning"]
+    },
+    {
+      "Question": "How do you productionize a machine learning system?",
+      "Answer": "Includes data pipelines, versioning, monitoring, CI/CD, scalable inference, logging, and feedback loops.",
+      "Difficulty": "Senior",
+      "Tags": ["mlops", "deployment"]
+    },
+    {
+      "Question": "Explain shadow deployment.",
+      "Answer": "New model runs alongside production model without affecting users to evaluate performance safely.",
+      "Difficulty": "Senior",
+      "Tags": ["deployment", "mlops"]
+    },
+    {
+      "Question": "What is canary deployment in ML?",
+      "Answer": "Gradually routes small percentage of traffic to new model before full rollout.",
+      "Difficulty": "Senior",
+      "Tags": ["deployment", "mlops"]
+    }, {
+    "Question": "Explain the difference between encoder-only, decoder-only, and encoder-decoder transformer architectures.",
+    "Answer": "Encoder-only models (e.g., BERT-style) learn contextual representations for understanding tasks. Decoder-only models generate tokens autoregressively for text generation. Encoder-decoder models first encode input context then generate outputs conditioned on it, useful for translation and summarization. Architectural differences impact latency, training objectives, and downstream suitability.",
+    "Difficulty": "Senior",
+    "Tags": ["transformers", "architecture", "nlp"]
+    },
+    {
+      "Question": "Why does self-attention have quadratic complexity and how is it reduced?",
+      "Answer": "Self-attention computes pairwise token interactions, leading to O(n²) complexity with sequence length. Reduction techniques include sparse attention, linear attention, low-rank approximations, chunking, and memory-efficient attention implementations.",
+      "Difficulty": "Senior",
+      "Tags": ["transformers", "scaling"]
+    },
+    {
+      "Question": "Explain gradient checkpointing and when to use it.",
+      "Answer": "Gradient checkpointing trades computation for memory by recomputing intermediate activations during backpropagation instead of storing them. It enables training larger models on limited GPU memory.",
+      "Difficulty": "Senior",
+      "Tags": ["optimization", "memory management"]
+    },
+    {
+      "Question": "What is mixed precision training and why is it beneficial?",
+      "Answer": "Mixed precision uses FP16/BF16 alongside FP32 to accelerate computation and reduce memory usage while maintaining numerical stability via loss scaling.",
+      "Difficulty": "Senior",
+      "Tags": ["optimization", "hardware acceleration"]
+    },
+    {
+      "Question": "Explain the role of activation functions in deep networks beyond non-linearity.",
+      "Answer": "Activation functions influence gradient flow, sparsity, training stability, and representational power. Choices like ReLU, GELU, and Swish affect convergence speed and deep model scaling behavior.",
+      "Difficulty": "Senior",
+      "Tags": ["deep learning", "architecture"]
+    },
+    {
+      "Question": "Why does GELU perform better than ReLU in transformers?",
+      "Answer": "GELU weights inputs probabilistically rather than hard-thresholding like ReLU, improving gradient smoothness and representation learning, especially in large-scale transformer training.",
+      "Difficulty": "Senior",
+      "Tags": ["deep learning", "transformers"]
+    },
+    {
+      "Question": "Explain layer normalization vs batch normalization differences.",
+      "Answer": "BatchNorm normalizes across batch dimension and depends on batch statistics, while LayerNorm normalizes across features within each sample, making it suitable for sequence models and transformers.",
+      "Difficulty": "Senior",
+      "Tags": ["deep learning", "normalization"]
+    },
+    {
+      "Question": "What is spectral normalization?",
+      "Answer": "Spectral normalization constrains weight matrices by limiting largest singular value, stabilizing GAN training and controlling Lipschitz continuity.",
+      "Difficulty": "Senior",
+      "Tags": ["gan", "regularization"]
+    },
+    {
+      "Question": "Explain Lipschitz continuity importance in ML optimization.",
+      "Answer": "Bounding gradients ensures stable optimization and prevents exploding updates. Many GAN stabilization methods enforce Lipschitz constraints.",
+      "Difficulty": "Senior",
+      "Tags": ["optimization", "theory"]
+    },
+    {
+      "Question": "What is Sharpness-Aware Minimization (SAM)?",
+      "Answer": "SAM optimizes parameters that lie in flat minima by minimizing worst-case loss within a neighborhood, improving generalization.",
+      "Difficulty": "Senior",
+      "Tags": ["optimization", "generalization"]
+    },
+    {
+      "Question": "Explain implicit regularization in deep learning.",
+      "Answer": "Optimization methods like SGD bias solutions toward simpler models even without explicit penalties, contributing to generalization.",
+      "Difficulty": "Senior",
+      "Tags": ["optimization", "generalization"]
+    },
+    {
+      "Question": "What is double descent phenomenon?",
+      "Answer": "Test error decreases, then increases, then decreases again as model capacity grows beyond interpolation threshold, challenging classical bias–variance theory.",
+      "Difficulty": "Senior",
+      "Tags": ["theory", "generalization"]
+    },
+    {
+      "Question": "Explain feature attribution methods.",
+      "Answer": "Techniques like SHAP, Integrated Gradients, and LIME estimate feature contributions to predictions, improving interpretability.",
+      "Difficulty": "Senior",
+      "Tags": ["interpretability", "explainable ai"]
+    },
+    {
+      "Question": "What are limitations of SHAP explanations?",
+      "Answer": "Computational cost, independence assumptions, instability in correlated features, and potential misleading interpretations.",
+      "Difficulty": "Senior",
+      "Tags": ["explainable ai"]
+    },
+    {
+      "Question": "Explain counterfactual explanations.",
+      "Answer": "They describe minimal input changes required to alter predictions, useful for interpretability and fairness analysis.",
+      "Difficulty": "Senior",
+      "Tags": ["interpretability", "fairness"]
+    },
+    {
+      "Question": "What is fairness in machine learning systems?",
+      "Answer": "Ensuring models do not produce biased outcomes across demographic groups using metrics like demographic parity or equal opportunity.",
+      "Difficulty": "Senior",
+      "Tags": ["ethics", "fairness"]
+    },
+    {
+      "Question": "Explain adversarial examples.",
+      "Answer": "Small perturbations to inputs that cause incorrect predictions, revealing model vulnerabilities and robustness limitations.",
+      "Difficulty": "Senior",
+      "Tags": ["robustness", "security"]
+    },
+    {
+      "Question": "How do adversarial training methods improve robustness?",
+      "Answer": "Models are trained using adversarially perturbed samples, forcing learning of more stable decision boundaries.",
+      "Difficulty": "Senior",
+      "Tags": ["robustness"]
+    },
+    {
+      "Question": "What is federated learning?",
+      "Answer": "Models train across decentralized devices without sharing raw data, improving privacy and scalability.",
+      "Difficulty": "Senior",
+      "Tags": ["distributed learning", "privacy"]
+    },
+    {
+      "Question": "Explain differential privacy in ML.",
+      "Answer": "Adds controlled noise to training updates to prevent reconstruction of individual data samples while preserving aggregate learning.",
+      "Difficulty": "Senior",
+      "Tags": ["privacy", "security"]
+    },
+    {
+      "Question": "What is retrieval latency bottleneck in RAG systems?",
+      "Answer": "Vector search delays can dominate inference time; optimization involves indexing strategies, ANN search, caching, and embedding compression.",
+      "Difficulty": "Senior",
+      "Tags": ["rag", "systems"]
+    },
+    {
+      "Question": "Explain vector database indexing strategies.",
+      "Answer": "Methods like HNSW, IVF, and PQ balance accuracy and speed for approximate nearest neighbor search.",
+      "Difficulty": "Senior",
+      "Tags": ["vector databases", "rag"]
+    },
+    {
+      "Question": "What is embedding drift?",
+      "Answer": "Embedding distributions change over time due to model updates or data shifts, degrading retrieval performance.",
+      "Difficulty": "Senior",
+      "Tags": ["monitoring", "rag"]
+    },
+    {
+      "Question": "Explain evaluation challenges for generative models.",
+      "Answer": "Metrics like BLEU or ROUGE fail to capture semantic quality; human evaluation and learned evaluators are often required.",
+      "Difficulty": "Senior",
+      "Tags": ["evaluation", "generative ai"]
+    },
+    {
+      "Question": "What is perplexity and its limitation?",
+      "Answer": "Measures prediction uncertainty in language models but does not correlate perfectly with human-perceived quality.",
+      "Difficulty": "Senior",
+      "Tags": ["nlp", "evaluation"]
+    },
+    {
+      "Question": "Explain prompt engineering principles.",
+      "Answer": "Careful prompt structuring, role specification, examples, and constraints guide LLM outputs without retraining.",
+      "Difficulty": "Senior",
+      "Tags": ["llm", "prompt engineering"]
+    },
+    {
+      "Question": "What is chain-of-thought prompting?",
+      "Answer": "Encourages step-by-step reasoning generation, improving complex reasoning performance.",
+      "Difficulty": "Senior",
+      "Tags": ["llm", "reasoning"]
+    },
+    {
+      "Question": "Explain tool-augmented LLM systems.",
+      "Answer": "LLMs call external APIs, databases, or tools to extend capabilities beyond internal knowledge.",
+      "Difficulty": "Senior",
+      "Tags": ["agents", "llm systems"]
+    },
+    {
+      "Question": "What is agentic AI architecture?",
+      "Answer": "Autonomous systems combining planning, memory, reasoning, and tool usage to complete multi-step tasks.",
+      "Difficulty": "Senior",
+      "Tags": ["agents", "ai systems"]
+    },
+    {
+      "Question": "Explain memory systems in AI agents.",
+      "Answer": "Short-term memory handles current context; long-term memory uses vector stores or databases for persistent knowledge.",
+      "Difficulty": "Senior",
+      "Tags": ["agents", "rag"]
+    },
+    {
+      "Question": "What is inference optimization for LLM deployment?",
+      "Answer": "Includes quantization, KV-cache reuse, batching, speculative decoding, and hardware-aware scheduling.",
+      "Difficulty": "Senior",
+      "Tags": ["deployment", "llm"]
+    },
+    {
+      "Question": "Explain KV cache in transformers.",
+      "Answer": "Stores key/value tensors from previous tokens to avoid recomputation during autoregressive decoding.",
+      "Difficulty": "Senior",
+      "Tags": ["transformers", "optimization"]
+    },
+    {
+      "Question": "What is speculative decoding?",
+      "Answer": "A smaller model proposes tokens while a larger model verifies them, accelerating generation.",
+      "Difficulty": "Senior",
+      "Tags": ["llm", "inference optimization"]
+    },
+    {
+      "Question": "Explain alignment problem in AI.",
+      "Answer": "Ensuring AI systems behave according to human values and intentions using RLHF, constitutional training, or reward modeling.",
+      "Difficulty": "Senior",
+      "Tags": ["ai safety", "alignment"]
+    },
+    {
+      "Question": "What is RLHF?",
+      "Answer": "Reinforcement Learning from Human Feedback trains reward models from human preferences and optimizes policy accordingly.",
+      "Difficulty": "Senior",
+      "Tags": ["llm", "reinforcement learning"]
+    },
+    {
+      "Question": "Explain reward modeling pipeline.",
+      "Answer": "Collect preference comparisons, train reward model, optimize policy using reinforcement learning algorithms.",
+      "Difficulty": "Senior",
+      "Tags": ["alignment"]
+    },
+    {
+      "Question": "What are evaluation risks in RLHF systems?",
+      "Answer": "Reward hacking, annotator bias, over-optimization, and distribution mismatch between training and deployment.",
+      "Difficulty": "Senior",
+      "Tags": ["alignment", "evaluation"]
+    },
+    {
+      "Question": "Explain multimodal learning challenges.",
+      "Answer": "Aligning representations across modalities requires shared embedding spaces, large datasets, and synchronization strategies.",
+      "Difficulty": "Senior",
+      "Tags": ["multimodal ai"]
+    },
+    {
+      "Question": "What is cross-modal attention?",
+      "Answer": "Attention mechanism allowing one modality (e.g., text) to attend to another (e.g., image features).",
+      "Difficulty": "Senior",
+      "Tags": ["multimodal", "transformers"]
+    },
+    {
+      "Question": "Explain zero-shot vs few-shot learning.",
+      "Answer": "Zero-shot uses no task-specific examples; few-shot uses limited examples to guide predictions via prompting or transfer learning.",
+      "Difficulty": "Senior",
+      "Tags": ["llm", "transfer learning"]
+    },
+    {
+      "Question": "What is meta-learning?",
+      "Answer": "Models learn how to learn, enabling rapid adaptation to new tasks with minimal data.",
+      "Difficulty": "Senior",
+      "Tags": ["meta learning"]
+    },
+    {
+      "Question": "Explain MAML algorithm intuition.",
+      "Answer": "Model parameters are optimized so small gradient updates quickly adapt to new tasks.",
+      "Difficulty": "Senior",
+      "Tags": ["meta learning"]
+    },
+    {
+      "Question": "What is neural architecture search (NAS)?",
+      "Answer": "Automated discovery of optimal neural architectures using search strategies like reinforcement learning or evolutionary algorithms.",
+      "Difficulty": "Senior",
+      "Tags": ["automl"]
+    },
+    {
+      "Question": "Explain AutoML advantages and risks.",
+      "Answer": "Automates model selection and tuning but may increase compute cost and reduce interpretability.",
+      "Difficulty": "Senior",
+      "Tags": ["automl"]
+    },
+    {
+      "Question": "What is data-centric AI?",
+      "Answer": "Focuses on improving datasets instead of model complexity to achieve performance gains.",
+      "Difficulty": "Senior",
+      "Tags": ["data engineering"]
+    },
+    {
+      "Question": "Explain synthetic data generation use cases.",
+      "Answer": "Used when real data is scarce or sensitive; generated via simulators, GANs, or diffusion models.",
+      "Difficulty": "Senior",
+      "Tags": ["data generation"]
+    },
+    {
+      "Question": "What is diffusion model intuition?",
+      "Answer": "Model learns to reverse gradual noise addition process to generate realistic samples.",
+      "Difficulty": "Senior",
+      "Tags": ["generative models", "diffusion"]
+    },
+    {
+      "Question": "Explain classifier-free guidance in diffusion models.",
+      "Answer": "Combines conditional and unconditional predictions to control generation strength and fidelity.",
+      "Difficulty": "Senior",
+      "Tags": ["diffusion models"]
+    },
+    {
+      "Question": "How do you design an end-to-end ML platform?",
+      "Answer": "Includes data ingestion, feature pipelines, experiment tracking, training orchestration, model registry, deployment, monitoring, and feedback loops.",
+      "Difficulty": "Senior",
+      "Tags": ["mlops", "system design"]
+    }, 
+    {
+    "Question": "What is the difference between classification and regression problems?",
+    "Answer": "Classification predicts discrete categories such as spam or not spam, while regression predicts continuous numerical values like house prices. The choice affects model selection, loss functions, and evaluation metrics.",
+    "Difficulty": "Mid",
+    "Tags": ["supervised learning", "fundamentals"]
+    },
+    {
+      "Question": "Explain overfitting and how to detect it.",
+      "Answer": "Overfitting occurs when a model memorizes training data and performs poorly on unseen data. It is detected when training accuracy is high but validation accuracy is significantly lower.",
+      "Difficulty": "Mid",
+      "Tags": ["generalization", "model evaluation"]
+    },
+    {
+      "Question": "How does regularization help machine learning models?",
+      "Answer": "Regularization penalizes large weights to reduce model complexity and prevent overfitting. Common methods include L1 (sparsity) and L2 (weight shrinkage).",
+      "Difficulty": "Mid",
+      "Tags": ["regularization", "optimization"]
+    },
+    {
+      "Question": "Explain cross-validation and why it is important.",
+      "Answer": "Cross-validation splits data into multiple folds and trains models repeatedly to estimate generalization performance more reliably than a single train-test split.",
+      "Difficulty": "Mid",
+      "Tags": ["evaluation", "validation"]
+    },
+    {
+      "Question": "What is feature scaling and when is it necessary?",
+      "Answer": "Feature scaling standardizes feature ranges using normalization or standardization. It is essential for distance-based and gradient-based models such as KNN, SVM, and neural networks.",
+      "Difficulty": "Mid",
+      "Tags": ["preprocessing", "feature engineering"]
+    },
+    {
+      "Question": "Explain the difference between normalization and standardization.",
+      "Answer": "Normalization rescales values to a fixed range (usually 0–1), while standardization transforms features to zero mean and unit variance.",
+      "Difficulty": "Mid",
+      "Tags": ["data preprocessing"]
+    },
+    {
+      "Question": "What is a confusion matrix?",
+      "Answer": "A confusion matrix shows prediction results across true positives, false positives, true negatives, and false negatives, helping analyze classification performance.",
+      "Difficulty": "Mid",
+      "Tags": ["evaluation", "classification"]
+    },
+    {
+      "Question": "Explain precision vs recall tradeoff.",
+      "Answer": "Precision measures correctness of positive predictions, while recall measures coverage of actual positives. Increasing one often decreases the other depending on decision threshold.",
+      "Difficulty": "Mid",
+      "Tags": ["evaluation metrics"]
+    },
+    {
+      "Question": "What is ROC-AUC score?",
+      "Answer": "ROC-AUC measures a classifier’s ability to distinguish between classes across thresholds by plotting true positive rate against false positive rate.",
+      "Difficulty": "Mid",
+      "Tags": ["evaluation"]
+    },
+    {
+      "Question": "When should you use F1-score instead of accuracy?",
+      "Answer": "F1-score is preferred when datasets are imbalanced because accuracy can be misleading if one class dominates.",
+      "Difficulty": "Mid",
+      "Tags": ["evaluation", "imbalanced data"]
+    },
+    {
+      "Question": "Explain class imbalance and solutions.",
+      "Answer": "Class imbalance occurs when one class appears much more frequently. Solutions include resampling, class weights, synthetic data generation (SMOTE), and threshold tuning.",
+      "Difficulty": "Mid",
+      "Tags": ["data imbalance"]
+    },
+    {
+      "Question": "What is SMOTE?",
+      "Answer": "SMOTE generates synthetic minority samples by interpolating between existing minority examples to balance datasets.",
+      "Difficulty": "Mid",
+      "Tags": ["data preprocessing"]
+    },
+    {
+      "Question": "Explain decision tree splitting criteria.",
+      "Answer": "Decision trees split data using metrics like Gini impurity or information gain to maximize class separation.",
+      "Difficulty": "Mid",
+      "Tags": ["decision trees"]
+    },
+    {
+      "Question": "Why do random forests reduce overfitting?",
+      "Answer": "Random forests average predictions from many trees trained on different subsets of data and features, reducing variance.",
+      "Difficulty": "Mid",
+      "Tags": ["ensemble learning"]
+    },
+    {
+      "Question": "Explain gradient boosting intuition.",
+      "Answer": "Gradient boosting sequentially trains weak learners to correct previous errors by minimizing residual loss.",
+      "Difficulty": "Mid",
+      "Tags": ["ensemble learning", "boosting"]
+    },
+    {
+      "Question": "Difference between bagging and boosting?",
+      "Answer": "Bagging trains models independently and averages results, while boosting trains models sequentially focusing on difficult samples.",
+      "Difficulty": "Mid",
+      "Tags": ["ensemble learning"]
+    },
+    {
+      "Question": "What is learning rate in gradient descent?",
+      "Answer": "Learning rate controls update step size during optimization. Too large causes divergence; too small slows convergence.",
+      "Difficulty": "Mid",
+      "Tags": ["optimization"]
+    },
+    {
+      "Question": "Explain stochastic vs batch gradient descent.",
+      "Answer": "Batch GD uses entire dataset per update, SGD uses single samples, and mini-batch GD balances efficiency and stability.",
+      "Difficulty": "Mid",
+      "Tags": ["optimization"]
+    },
+    {
+      "Question": "What is early stopping?",
+      "Answer": "Training stops when validation performance stops improving, preventing overfitting.",
+      "Difficulty": "Mid",
+      "Tags": ["training strategy"]
+    },
+    {
+      "Question": "Explain dropout regularization.",
+      "Answer": "Dropout randomly disables neurons during training, preventing co-adaptation and improving generalization.",
+      "Difficulty": "Mid",
+      "Tags": ["deep learning", "regularization"]
+    },
+    {
+      "Question": "What is embedding representation?",
+      "Answer": "Embeddings map categorical or textual inputs into dense vector spaces capturing semantic similarity.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp", "representation learning"]
+    },
+    {
+      "Question": "Explain word embeddings like Word2Vec.",
+      "Answer": "Word2Vec learns embeddings by predicting surrounding words, capturing semantic relationships between words.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp"]
+    },
+    {
+      "Question": "What is transfer learning?",
+      "Answer": "Transfer learning reuses knowledge from pretrained models to improve performance on related tasks with limited data.",
+      "Difficulty": "Mid",
+      "Tags": ["transfer learning"]
+    },
+    {
+      "Question": "Why freeze layers during fine-tuning?",
+      "Answer": "Freezing preserves learned representations and prevents overfitting when target datasets are small.",
+      "Difficulty": "Mid",
+      "Tags": ["deep learning"]
+    },
+    {
+      "Question": "Explain convolution operation in CNNs.",
+      "Answer": "Convolution applies filters sliding across input images to detect spatial patterns such as edges or textures.",
+      "Difficulty": "Mid",
+      "Tags": ["computer vision", "cnn"]
+    },
+    {
+      "Question": "What is pooling in CNNs?",
+      "Answer": "Pooling reduces spatial dimensions while retaining important features, improving efficiency and translation invariance.",
+      "Difficulty": "Mid",
+      "Tags": ["cnn"]
+    },
+    {
+      "Question": "Explain vanishing gradient problem conceptually.",
+      "Answer": "Gradients shrink through many layers, slowing or stopping learning in deep networks.",
+      "Difficulty": "Mid",
+      "Tags": ["deep learning"]
+    },
+    {
+      "Question": "What is sequence modeling?",
+      "Answer": "Modeling ordered data such as text, speech, or time series using architectures like RNNs or transformers.",
+      "Difficulty": "Mid",
+      "Tags": ["sequence models"]
+    },
+    {
+      "Question": "Explain attention mechanism intuition.",
+      "Answer": "Attention allows models to focus on relevant parts of input rather than compressing all information into a single vector.",
+      "Difficulty": "Mid",
+      "Tags": ["transformers"]
+    },
+    {
+      "Question": "What is tokenization in NLP?",
+      "Answer": "Tokenization splits text into smaller units such as words or subwords used as model inputs.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp preprocessing"]
+    },
+    {
+      "Question": "Explain padding and masking in sequence models.",
+      "Answer": "Padding equalizes sequence lengths, while masking prevents models from attending to padded tokens.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp"]
+    },
+    {
+      "Question": "What is perplexity in language models?",
+      "Answer": "Perplexity measures how well a model predicts text; lower values indicate better predictive ability.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp evaluation"]
+    },
+    {
+      "Question": "Explain feature importance.",
+      "Answer": "Feature importance estimates how much each feature contributes to predictions, useful for interpretation.",
+      "Difficulty": "Mid",
+      "Tags": ["interpretability"]
+    },
+    {
+      "Question": "What is hyperparameter tuning?",
+      "Answer": "Searching for optimal model parameters like learning rate or depth using grid search, random search, or Bayesian optimization.",
+      "Difficulty": "Mid",
+      "Tags": ["model tuning"]
+    },
+    {
+      "Question": "Difference between parameters and hyperparameters?",
+      "Answer": "Parameters are learned during training; hyperparameters are set before training.",
+      "Difficulty": "Mid",
+      "Tags": ["fundamentals"]
+    },
+    {
+      "Question": "Explain pipeline concept in ML.",
+      "Answer": "A pipeline organizes preprocessing, feature engineering, and model training into reproducible workflows.",
+      "Difficulty": "Mid",
+      "Tags": ["ml engineering"]
+    },
+    {
+      "Question": "What is data leakage?",
+      "Answer": "Data leakage occurs when information from validation or future data enters training, causing overly optimistic performance.",
+      "Difficulty": "Mid",
+      "Tags": ["evaluation"]
+    },
+    {
+      "Question": "Explain train-validation-test split roles.",
+      "Answer": "Training learns parameters, validation tunes models, and test evaluates final performance.",
+      "Difficulty": "Mid",
+      "Tags": ["evaluation"]
+    },
+    {
+      "Question": "What is model inference?",
+      "Answer": "Inference is using a trained model to make predictions on new data.",
+      "Difficulty": "Mid",
+      "Tags": ["deployment"]
+    },
+    {
+      "Question": "Explain batch inference vs real-time inference.",
+      "Answer": "Batch inference processes large datasets offline, while real-time inference responds instantly per request.",
+      "Difficulty": "Mid",
+      "Tags": ["deployment"]
+    },
+    {
+      "Question": "What is model drift?",
+      "Answer": "Model performance degrades over time due to changing data distributions.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops", "monitoring"]
+    },
+    {
+      "Question": "Explain concept drift vs data drift.",
+      "Answer": "Data drift changes input distribution; concept drift changes relationship between inputs and labels.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops"]
+    },
+    {
+      "Question": "Why version datasets and models?",
+      "Answer": "Versioning ensures reproducibility, debugging ability, and controlled deployments.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops"]
+    },
+    {
+      "Question": "Explain experiment tracking.",
+      "Answer": "Recording parameters, metrics, datasets, and results to compare experiments systematically.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops"]
+    },
+    {
+      "Question": "What is feature engineering?",
+      "Answer": "Transforming raw data into meaningful inputs that improve model performance.",
+      "Difficulty": "Mid",
+      "Tags": ["feature engineering"]
+    },
+    {
+      "Question": "Explain one-hot encoding.",
+      "Answer": "Converts categorical variables into binary vectors representing category presence.",
+      "Difficulty": "Mid",
+      "Tags": ["preprocessing"]
+    },
+    {
+      "Question": "What is dimensionality reduction?",
+      "Answer": "Reducing feature space size while preserving information using methods like PCA.",
+      "Difficulty": "Mid",
+      "Tags": ["feature engineering"]
+    },
+    {
+      "Question": "Explain PCA intuition.",
+      "Answer": "PCA projects data onto directions of maximum variance to compress information.",
+      "Difficulty": "Mid",
+      "Tags": ["dimensionality reduction"]
+    },
+    {
+      "Question": "When should PCA not be used?",
+      "Answer": "When interpretability is critical or relationships are nonlinear since PCA is linear.",
+      "Difficulty": "Mid",
+      "Tags": ["dimensionality reduction"]
+    },
+    {
+      "Question": "Explain k-means clustering algorithm.",
+      "Answer": "K-means assigns points to nearest centroid and iteratively updates centroids to minimize within-cluster variance.",
+      "Difficulty": "Mid",
+      "Tags": ["unsupervised learning"]
+    },{
+    "Question": "What is hierarchical clustering and how does it differ from k-means?",
+    "Answer": "Hierarchical clustering builds nested clusters either by merging smaller clusters (agglomerative) or splitting larger ones (divisive). Unlike k-means, it does not require specifying the number of clusters beforehand and produces a dendrogram representing cluster relationships.",
+    "Difficulty": "Mid",
+    "Tags": ["unsupervised learning", "clustering"]
+    },
+    {
+      "Question": "Explain cosine similarity and when to use it.",
+      "Answer": "Cosine similarity measures the angle between two vectors rather than their magnitude. It is commonly used in NLP and embedding comparisons where direction matters more than scale.",
+      "Difficulty": "Mid",
+      "Tags": ["similarity", "embeddings"]
+    },
+    {
+      "Question": "What is Euclidean distance and its limitation?",
+      "Answer": "Euclidean distance measures straight-line distance between points. It becomes less meaningful in high-dimensional spaces due to the curse of dimensionality.",
+      "Difficulty": "Mid",
+      "Tags": ["distance metrics"]
+    },
+    {
+      "Question": "Explain the curse of dimensionality.",
+      "Answer": "As feature dimensions increase, data becomes sparse and distance metrics lose effectiveness, making learning harder and requiring more data.",
+      "Difficulty": "Mid",
+      "Tags": ["theory", "high dimensional data"]
+    },
+    {
+      "Question": "What is bias–variance tradeoff?",
+      "Answer": "Bias refers to model simplicity causing underfitting, while variance refers to sensitivity to training data causing overfitting. Good models balance both.",
+      "Difficulty": "Mid",
+      "Tags": ["theory", "generalization"]
+    },
+    {
+      "Question": "Explain underfitting and how to fix it.",
+      "Answer": "Underfitting occurs when a model is too simple to capture patterns. Solutions include increasing model complexity, adding features, or reducing regularization.",
+      "Difficulty": "Mid",
+      "Tags": ["model performance"]
+    },
+    {
+      "Question": "What is feature selection?",
+      "Answer": "Feature selection chooses the most relevant input variables to improve performance and reduce overfitting and computation cost.",
+      "Difficulty": "Mid",
+      "Tags": ["feature engineering"]
+    },
+    {
+      "Question": "Explain wrapper vs filter feature selection methods.",
+      "Answer": "Filter methods evaluate features independently using statistics, while wrapper methods evaluate subsets using model performance.",
+      "Difficulty": "Mid",
+      "Tags": ["feature selection"]
+    },
+    {
+      "Question": "What is mutual information?",
+      "Answer": "Mutual information measures dependency between variables, helping identify informative features.",
+      "Difficulty": "Mid",
+      "Tags": ["statistics", "feature selection"]
+    },
+    {
+      "Question": "Explain logistic regression intuition.",
+      "Answer": "Logistic regression models probability using a sigmoid function applied to a linear combination of features.",
+      "Difficulty": "Mid",
+      "Tags": ["supervised learning"]
+    },
+    {
+      "Question": "Why is logistic regression considered a linear model?",
+      "Answer": "Because decision boundaries are linear combinations of input features even though output probabilities are nonlinear.",
+      "Difficulty": "Mid",
+      "Tags": ["linear models"]
+    },
+    {
+      "Question": "Explain softmax function purpose.",
+      "Answer": "Softmax converts logits into probability distributions across multiple classes.",
+      "Difficulty": "Mid",
+      "Tags": ["deep learning", "classification"]
+    },
+    {
+      "Question": "What is cross-entropy loss?",
+      "Answer": "Cross-entropy measures difference between predicted probability distribution and true labels, widely used for classification.",
+      "Difficulty": "Mid",
+      "Tags": ["loss functions"]
+    },
+    {
+      "Question": "Explain mean squared error limitations.",
+      "Answer": "MSE heavily penalizes outliers and may not reflect classification performance or probabilistic uncertainty well.",
+      "Difficulty": "Mid",
+      "Tags": ["loss functions"]
+    },
+    {
+      "Question": "What is label encoding vs one-hot encoding?",
+      "Answer": "Label encoding assigns integers to categories, while one-hot encoding creates binary vectors preventing unintended ordinal relationships.",
+      "Difficulty": "Mid",
+      "Tags": ["preprocessing"]
+    },
+    {
+      "Question": "Explain data augmentation.",
+      "Answer": "Artificially increases dataset size using transformations such as rotation, flipping, noise injection, or paraphrasing.",
+      "Difficulty": "Mid",
+      "Tags": ["data engineering"]
+    },
+    {
+      "Question": "Why is data augmentation useful?",
+      "Answer": "It improves generalization by exposing models to varied inputs and reducing overfitting.",
+      "Difficulty": "Mid",
+      "Tags": ["generalization"]
+    },
+    {
+      "Question": "Explain learning rate scheduling.",
+      "Answer": "Learning rate scheduling adjusts learning rate during training to improve convergence and stability.",
+      "Difficulty": "Mid",
+      "Tags": ["optimization"]
+    },
+    {
+      "Question": "What is cosine learning rate decay?",
+      "Answer": "A scheduling strategy where learning rate gradually decreases following a cosine curve, often improving final performance.",
+      "Difficulty": "Mid",
+      "Tags": ["optimization"]
+    },
+    {
+      "Question": "Explain Adam optimizer advantages.",
+      "Answer": "Adam adapts learning rates per parameter using momentum and variance estimates, accelerating convergence.",
+      "Difficulty": "Mid",
+      "Tags": ["optimization"]
+    },
+    {
+      "Question": "When might SGD outperform Adam?",
+      "Answer": "SGD often generalizes better in large-scale training after sufficient tuning.",
+      "Difficulty": "Mid",
+      "Tags": ["optimization"]
+    },
+    {
+      "Question": "Explain batch size impact on training.",
+      "Answer": "Small batches add noise improving generalization; large batches improve computational efficiency but may reduce generalization.",
+      "Difficulty": "Mid",
+      "Tags": ["training"]
+    },
+    {
+      "Question": "What is gradient clipping?",
+      "Answer": "Gradient clipping limits gradient magnitude to prevent exploding gradients during training.",
+      "Difficulty": "Mid",
+      "Tags": ["optimization"]
+    },
+    {
+      "Question": "Explain exploding gradients problem.",
+      "Answer": "Gradients grow excessively large causing unstable updates and divergence during training.",
+      "Difficulty": "Mid",
+      "Tags": ["deep learning"]
+    },
+    {
+      "Question": "What is transfer learning in computer vision?",
+      "Answer": "Using pretrained CNNs trained on large datasets like ImageNet to solve new vision tasks with limited data.",
+      "Difficulty": "Mid",
+      "Tags": ["computer vision", "transfer learning"]
+    },
+    {
+      "Question": "Explain fine-tuning vs feature extraction.",
+      "Answer": "Feature extraction freezes pretrained layers; fine-tuning updates some or all layers for task adaptation.",
+      "Difficulty": "Mid",
+      "Tags": ["deep learning"]
+    },
+    {
+      "Question": "What is object detection vs image classification?",
+      "Answer": "Classification predicts image category; object detection locates and classifies multiple objects using bounding boxes.",
+      "Difficulty": "Mid",
+      "Tags": ["computer vision"]
+    },
+    {
+      "Question": "Explain Intersection over Union (IoU).",
+      "Answer": "IoU measures overlap between predicted and ground-truth bounding boxes for detection evaluation.",
+      "Difficulty": "Mid",
+      "Tags": ["computer vision", "evaluation"]
+    },
+    {
+      "Question": "What is Non-Maximum Suppression (NMS)?",
+      "Answer": "NMS removes duplicate bounding boxes by keeping highest-confidence predictions.",
+      "Difficulty": "Mid",
+      "Tags": ["object detection"]
+    },
+    {
+      "Question": "Explain token embeddings vs positional embeddings.",
+      "Answer": "Token embeddings represent word meaning; positional embeddings encode token order information in transformers.",
+      "Difficulty": "Mid",
+      "Tags": ["transformers"]
+    },
+    {
+      "Question": "Why do transformers need positional encoding?",
+      "Answer": "Because self-attention lacks inherent sequence order awareness.",
+      "Difficulty": "Mid",
+      "Tags": ["transformers"]
+    },
+    {
+      "Question": "Explain masked language modeling objective.",
+      "Answer": "Model predicts masked tokens using surrounding context to learn bidirectional representations.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp", "pretraining"]
+    },
+    {
+      "Question": "What is autoregressive language modeling?",
+      "Answer": "Model predicts next token based on previous tokens sequentially.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp"]
+    },
+    {
+      "Question": "Explain beam search decoding.",
+      "Answer": "Beam search keeps multiple candidate sequences during generation to improve output quality compared to greedy decoding.",
+      "Difficulty": "Mid",
+      "Tags": ["nlp", "generation"]
+    },
+    {
+      "Question": "What is temperature in text generation?",
+      "Answer": "Temperature controls randomness in sampling; higher values increase diversity while lower values increase determinism.",
+      "Difficulty": "Mid",
+      "Tags": ["generation", "llm"]
+    },
+    {
+      "Question": "Explain top-k sampling.",
+      "Answer": "Sampling only from top-k most probable tokens to balance randomness and coherence.",
+      "Difficulty": "Mid",
+      "Tags": ["generation"]
+    },
+    {
+      "Question": "Explain top-p (nucleus) sampling.",
+      "Answer": "Selects smallest set of tokens whose cumulative probability exceeds threshold p.",
+      "Difficulty": "Mid",
+      "Tags": ["generation"]
+    },
+    {
+      "Question": "What is embedding similarity search?",
+      "Answer": "Retrieving similar items by comparing vector embeddings using similarity metrics.",
+      "Difficulty": "Mid",
+      "Tags": ["vector search", "rag"]
+    },
+    {
+      "Question": "Explain approximate nearest neighbor search.",
+      "Answer": "ANN algorithms trade exact accuracy for faster similarity retrieval in large vector datasets.",
+      "Difficulty": "Mid",
+      "Tags": ["vector databases"]
+    },
+    {
+      "Question": "What is RAG (Retrieval-Augmented Generation)?",
+      "Answer": "Combines retrieval systems with generative models to incorporate external knowledge during generation.",
+      "Difficulty": "Mid",
+      "Tags": ["rag", "llm"]
+    },
+    {
+      "Question": "Why chunk documents in RAG pipelines?",
+      "Answer": "Chunking improves retrieval precision by indexing smaller semantic units.",
+      "Difficulty": "Mid",
+      "Tags": ["rag"]
+    },
+    {
+      "Question": "Explain embedding dimensionality tradeoffs.",
+      "Answer": "Higher dimensions capture more detail but increase storage and search cost.",
+      "Difficulty": "Mid",
+      "Tags": ["embeddings"]
+    },
+    {
+      "Question": "What is model quantization?",
+      "Answer": "Reducing numerical precision of weights to decrease model size and speed inference.",
+      "Difficulty": "Mid",
+      "Tags": ["deployment", "optimization"]
+    },
+    {
+      "Question": "Explain ONNX model format.",
+      "Answer": "ONNX provides an interoperable format allowing models to run across frameworks and hardware environments.",
+      "Difficulty": "Mid",
+      "Tags": ["deployment"]
+    },
+    {
+      "Question": "What is model serving?",
+      "Answer": "Deploying trained models behind APIs to handle prediction requests.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops", "deployment"]
+    },
+    {
+      "Question": "Explain canary deployment for ML models.",
+      "Answer": "New models are gradually released to small user subsets to monitor performance before full rollout.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops"]
+    },
+    {
+      "Question": "What is A/B testing in ML deployment?",
+      "Answer": "Comparing two model versions using real user traffic to determine which performs better.",
+      "Difficulty": "Mid",
+      "Tags": ["evaluation", "deployment"]
+    },
+    {
+      "Question": "Explain monitoring metrics for deployed models.",
+      "Answer": "Monitor prediction distribution, latency, accuracy proxies, drift metrics, and system health.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops", "monitoring"]
+    },
+    {
+      "Question": "Why retraining pipelines are important?",
+      "Answer": "They automatically update models when new data arrives, maintaining performance over time.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops"]
+    },
+    {
+      "Question": "What is feature store concept?",
+      "Answer": "A centralized system storing reusable, consistent features for training and inference.",
+      "Difficulty": "Mid",
+      "Tags": ["mlops", "data engineering"]
+    }
+  ]
+}

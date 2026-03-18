@@ -1,0 +1,42 @@
+# ══════════════════════════════════════════════════════════
+# Interviewer — AI Mock Interview App
+# Install: pip install -r requirements.txt
+# ══════════════════════════════════════════════════════════
+
+# ── Web framework ─────────────────────────────────────────
+fastapi==0.135.1
+uvicorn[standard]==0.41.0      # includes uvloop, httptools, websockets
+aiofiles==25.1.0               # required by FastAPI StaticFiles
+python-multipart==0.0.22       # required for Form / File uploads
+starlette==0.52.1
+
+# ── HTTP client (Ollama) ──────────────────────────────────
+requests==2.32.5
+
+# ── Speech-to-Text ────────────────────────────────────────
+faster-whisper==1.2.1
+ctranslate2==4.7.1             # faster-whisper backend
+
+# ── Text-to-Speech ───────────────────────────────────────
+kokoro==0.9.4
+soundfile==0.13.1
+misaki==0.9.4                  # kokoro G2P engine
+phonemizer-fork==3.3.2         # kokoro phonemizer
+espeakng-loader==0.2.4         # kokoro eSpeak backend
+
+# ── ML / Tensor runtime ───────────────────────────────────
+torch==2.10.0                  # required by kokoro + faster-whisper
+numpy==1.26.4
+scipy==1.17.1                  # audio signal processing
+onnxruntime==1.24.3            # faster-whisper inference backend
+
+# ── Hugging Face ecosystem ────────────────────────────────
+transformers==5.3.0
+tokenizers==0.22.2
+huggingface_hub==1.6.0
+safetensors==0.7.0
+
+# ── Utilities ─────────────────────────────────────────────
+pydantic==2.12.5
+python-dotenv==1.2.2           # optional: load .env config file
+tqdm==4.67.3                   # progress bars during model download

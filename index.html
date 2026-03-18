@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interviewer — AI Mock Interview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app.css?v=1773802718">
+</head>
+<body>
+<!-- ══════════════════════════════════════════════ HEADER -->
+<header>
+  <div class="logo-mark">🎤</div>
+  <div class="logo-text">Inter<span>viewer</span></div>
+
+  <div class="header-pills">
+    <div class="status-pill">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Checking…</span>
+    </div>
+
+    <div class="hdr-group">
+      <span>Speed</span>
+      <div class="speed-chips">
+        <button class="speed-chip"        onclick="changeSpeed('0.75',this)">0.75×</button>
+        <button class="speed-chip active" onclick="changeSpeed('1.0',this)">1.0×</button>
+        <button class="speed-chip"        onclick="changeSpeed('1.25',this)">1.25×</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════ LEFT SIDEBAR -->
+<aside id="sidebar">
+  <div class="sb-header">
+    <div class="sb-title">Interview Setup</div>
+    <div class="sb-subtitle">configure role · difficulty · questions</div>
+  </div>
+
+  <div class="sb-body">
+
+    <div class="field-group">
+      <div class="field-label">Job Role</div>
+      <div class="role-grid" id="role-presets">
+        <button class="role-chip"        onclick="setRole('Software Engineer',this)">Software Eng.</button>
+        <button class="role-chip"        onclick="setRole('Frontend Engineer',this)">Frontend Eng.</button>
+        <button class="role-chip"        onclick="setRole('Backend Engineer',this)">Backend Eng.</button>
+        <button class="role-chip"        onclick="setRole('Full Stack Engineer',this)">Full Stack</button>
+        <button class="role-chip active" onclick="setRole('Machine Learning Engineer',this)">ML Engineer</button>
+        <button class="role-chip"        onclick="setRole('AI Engineer',this)">AI Engineer</button>
+        <button class="role-chip"        onclick="setRole('Data Scientist',this)">Data Scientist</button>
+        <button class="role-chip"        onclick="setRole('Data Engineer',this)">Data Engineer</button>
+        <button class="role-chip"        onclick="setRole('DevOps Engineer',this)">DevOps</button>
+        <button class="role-chip"        onclick="setRole('Product Manager',this)">Product Mgr.</button>
+      </div>
+      <input class="sb-input" type="text" id="role-input" placeholder="Or type custom role…"
+        value="Machine Learning Engineer" oninput="clearRolePreset()" />
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Difficulty</div>
+      <div class="diff-tabs">
+        <button class="tab"        onclick="setDifficulty('junior',this)">Junior</button>
+        <button class="tab active" onclick="setDifficulty('mid',this)">Mid</button>
+        <button class="tab"        onclick="setDifficulty('senior',this)">Senior</button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Focus Areas <span style="color:var(--muted);font-size:9px">(optional)</span></div>
+      <textarea class="sb-input" id="focus-input" placeholder="e.g. React, system design, algorithms…"></textarea>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Questions — <span id="q-count-label" style="color:var(--text)">5</span></div>
+      <div class="range-row">
+        <input type="range" id="q-count" min="3" max="10" value="5"
+          oninput="document.getElementById('q-count-label').textContent=this.value" />
+        <span class="range-val" id="q-count-display">5</span>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Language</div>
+      <select class="sb-select" id="lang-select">
+        <option value="en">English</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Interviewer Voice</div>
+      <select class="sb-select" id="voice-select" onchange="changeVoice(this.value)">
+        <optgroup label="🇺🇸 American Female">
+          <option value="af_heart">Heart</option>
+          <option value="af_bella">Bella</option>
+          <option value="af_sarah">Sarah</option>
+          <option value="af_nicole">Nicole</option>
+          <option value="af_sky">Sky</option>
+        </optgroup>
+        <optgroup label="🇺🇸 American Male">
+          <option value="am_adam" selected>Adam</option>
+          <option value="am_michael">Michael</option>
+          <option value="am_echo">Echo</option>
+          <option value="am_eric">Eric</option>
+          <option value="am_liam">Liam</option>
+          <option value="am_onyx">Onyx</option>
+        </optgroup>
+        <optgroup label="🇬🇧 British Female">
+          <option value="bf_emma">Emma</option>
+          <option value="bf_isabella">Isabella</option>
+        </optgroup>
+        <optgroup label="🇬🇧 British Male">
+          <option value="bm_george">George</option>
+          <option value="bm_lewis">Lewis</option>
+          <option value="bm_daniel">Daniel</option>
+        </optgroup>
+      </select>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:3px">
+        ✓ Voice changes apply from next question
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Interviewer Avatar</div>
+      <div class="avatar-chips" id="avatar-chips">
+        <button class="avatar-chip active" data-avatar="male1"   onclick="setAvatar('male1',this)">👨 Alex</button>
+        <button class="avatar-chip"        data-avatar="female1" onclick="setAvatar('female1',this)">👩 Sarah</button>
+        <button class="avatar-chip"        data-avatar="male2"   onclick="setAvatar('male2',this)">👨🏻 James</button>
+        <button class="avatar-chip"        data-avatar="female2" onclick="setAvatar('female2',this)">👩🏻 Emma</button>
+      </div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:5px">
+        🔄 Auto-switches with voice gender
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="field-label">Text Sizes</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:2px">
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-family:var(--mono);font-size:9px;color:var(--sub)">Question text</span>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--accent)" id="sz-q-label">20px</span>
+          </div>
+          <input type="range" class="size-slider" id="sz-q" min="14" max="30" value="20"
+            oninput="applySize('q-text','--q-text-size',this.value,'sz-q-label')"/>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-family:var(--mono);font-size:9px;color:var(--sub)">Answer / feedback</span>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--accent)" id="sz-fb-label">13px</span>
+          </div>
+          <input type="range" class="size-slider" id="sz-fb" min="10" max="20" value="13"
+            oninput="applySize('feedback-box','--fb-text-size',this.value,'sz-fb-label')"/>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-family:var(--mono);font-size:9px;color:var(--sub)">Hint text</span>
+            <span style="font-family:var(--mono);font-size:9px;color:var(--accent)" id="sz-hint-label">13px</span>
+          </div>
+          <input type="range" class="size-slider" id="sz-hint" min="10" max="20" value="13"
+            oninput="applySize('hint-text','--hint-text-size',this.value,'sz-hint-label')"/>
+        </div>
+      </div>
+    </div>
+
+    <button class="start-btn" id="start-btn" onclick="startInterview()" disabled>
+      Begin Interview
+    </button>
+
+    <div id="cancel-btn-wrap" style="pointer-events:auto !important;position:relative;z-index:10">
+      <button class="cancel-btn" id="cancel-btn" onclick="cancelInterview()">
+        ✕ Cancel Interview
+      </button>
+    </div>
+
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════════ MAIN -->
+<main>
+
+  <!-- Idle caption -->
+  <div id="idle-screen" style="text-align:center;padding:10px 0 0">
+    <div class="idle-sub">Configure your interview on the left, then click <strong style="color:var(--accent)">Begin Interview</strong></div>
+  </div>
+
+  <!-- Progress bar -->
+  <div id="progress-wrap">
+    <div class="progress-meta">
+      <span id="progress-label">Question 0 / 0</span>
+      <span id="progress-pct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Generating loader -->
+  <div id="gen-loader">
+    <div class="spin"></div>
+    <div>
+      <div class="spin-text" id="gen-loader-text">Preparing Interview…</div>
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:3px" id="gen-loader-sub">Generating questions</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════ ZOOM CALL CARD -->
+  <div id="zoom-card">
+    <div class="zc-room" id="zc-room"></div>
+    <div class="zc-desk" id="zc-desk"></div>
+    <div class="zc-bokeh" style="width:80px;height:80px;background:#1d4ed8;top:15%;left:8%"></div>
+    <div class="zc-bokeh" style="width:50px;height:50px;background:#3730a3;top:10%;right:12%;opacity:.09"></div>
+    <div class="zc-topbar" style="z-index:10">
+      <span>🔒 AI Interview</span>
+      <span class="zc-topbar-time" id="zc-timer">00:00</span>
+    </div>
+    <div class="zc-question-pill" id="zc-qtext"></div>
+    <div class="zc-rec-dot"></div>
+
+    <!-- Male 1: Alex -->
+    <svg id="zc-figure" data-avatar="male1" viewBox="0 0 200 310" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="skinGrad" cx="45%" cy="35%" r="65%"><stop offset="0%" stop-color="#dba882"/><stop offset="60%" stop-color="#c8956a"/><stop offset="100%" stop-color="#b07850"/></radialGradient>
+        <radialGradient id="suitGrad" cx="50%" cy="20%" r="80%"><stop offset="0%" stop-color="#16264a"/><stop offset="100%" stop-color="#0a1228"/></radialGradient>
+        <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.35"/></filter>
+      </defs>
+      <path d="M 22 310 L 25 225 Q 38 210 68 205 L 85 196 L 100 212 L 115 196 L 132 205 Q 162 210 175 225 L 178 310 Z" fill="url(#suitGrad)" filter="url(#softShadow)"/>
+      <path d="M 85 196 L 68 218 L 62 255 L 100 242 L 138 255 L 132 218 L 115 196 L 100 212 Z" fill="#0a1228"/>
+      <path d="M 100 212 L 91 224 L 100 244 L 109 224 Z" fill="#dde5f8"/>
+      <path d="M 100 216 L 96 232 L 100 244 L 104 232 Z" fill="#1d4ed8"/>
+      <polygon points="97.5,244 100,252 102.5,244" fill="#1640b8"/>
+      <rect x="24" y="262" width="18" height="7" rx="3" fill="#dde5f8" opacity=".75"/>
+      <rect x="158" y="262" width="18" height="7" rx="3" fill="#dde5f8" opacity=".75"/>
+      <rect x="87" y="194" width="26" height="22" rx="5" fill="url(#skinGrad)"/>
+      <ellipse cx="100" cy="153" rx="55" ry="62" fill="url(#skinGrad)" filter="url(#softShadow)"/>
+      <ellipse cx="100" cy="187" rx="44" ry="24" fill="#c8956a"/>
+      <ellipse cx="100" cy="98" rx="56" ry="26" fill="#1c140a"/>
+      <ellipse cx="46" cy="134" rx="11" ry="32" fill="#1c140a"/>
+      <ellipse cx="154" cy="134" rx="11" ry="32" fill="#1c140a"/>
+      <ellipse cx="45" cy="156" rx="9" ry="14" fill="#bb8560"/><ellipse cx="155" cy="156" rx="9" ry="14" fill="#bb8560"/>
+      <path d="M 68 128 Q 82 121 96 127" stroke="#241808" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M 104 127 Q 118 121 132 128" stroke="#241808" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="82" cy="142" rx="13" ry="10" fill="#f8f6f2"/><ellipse cx="118" cy="142" rx="13" ry="10" fill="#f8f6f2"/>
+      <ellipse cx="82" cy="142" rx="8.5" ry="9" fill="#2d1f0e"/><ellipse cx="118" cy="142" rx="8.5" ry="9" fill="#2d1f0e"/>
+      <ellipse cx="82" cy="142" rx="4.5" ry="5" fill="#0d0806"/><ellipse cx="118" cy="142" rx="4.5" ry="5" fill="#0d0806"/>
+      <ellipse cx="84.5" cy="139" rx="2.5" ry="2.5" fill="white" opacity=".85"/><ellipse cx="120.5" cy="139" rx="2.5" ry="2.5" fill="white" opacity=".85"/>
+      <ellipse cx="82" cy="142" rx="13" ry="10" fill="#c8956a" class="zc-eyelid l"/>
+      <ellipse cx="118" cy="142" rx="13" ry="10" fill="#c8956a" class="zc-eyelid r"/>
+      <path d="M 69 136 Q 75.5 130 82 133 Q 88.5 130 95 136" stroke="#100c06" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <path d="M 105 136 Q 111.5 130 118 133 Q 124.5 130 131 136" stroke="#100c06" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <ellipse cx="100" cy="174" rx="9" ry="6" fill="#b08060" opacity=".5"/>
+      <path d="M 83 188 Q 100 197 117 188" stroke="#8a5038" stroke-width="2.8" fill="none" stroke-linecap="round" id="zc-mouth-closed"/>
+      <path d="M 83 188 Q 91 184 100 185 Q 109 184 117 188 Q 109 192 100 191 Q 91 192 83 188 Z" fill="#a86850" id="zc-lip-upper"/>
+      <g id="zc-mouth-open">
+        <ellipse cx="100" cy="194" rx="15" ry="8" fill="#180804"/>
+        <rect x="87" y="189" width="26" height="8" rx="3" fill="#edeae2" id="zc-teeth"/>
+        <rect x="88" y="197" width="24" height="5" rx="2" fill="#e0ddd5" opacity=".7"/>
+        <path d="M 83 200 Q 100 210 117 200 Q 109 205 100 206 Q 91 205 83 200 Z" fill="#a86850"/>
+      </g>
+    </svg>
+
+    <!-- Female 1: Sarah -->
+    <svg id="zc-figure-female1" data-avatar="female1" viewBox="0 0 200 310" xmlns="http://www.w3.org/2000/svg" style="position:absolute;bottom:20%;left:50%;transform:translateX(-50%);width:52%;max-width:220px;z-index:3;display:none;animation:zc-breathe 5s ease-in-out infinite;transform-origin:bottom center">
+      <defs><radialGradient id="skinF1" cx="45%" cy="35%" r="65%"><stop offset="0%" stop-color="#f0c8a0"/><stop offset="60%" stop-color="#e0aa80"/><stop offset="100%" stop-color="#c88860"/></radialGradient></defs>
+      <path d="M 25 310 L 28 228 Q 42 212 70 207 L 85 198 L 100 213 L 115 198 L 130 207 Q 158 212 172 228 L 175 310 Z" fill="#1e3a5f"/>
+      <path d="M 85 198 L 72 215 L 100 238 L 128 215 L 115 198 L 100 213 Z" fill="#e8d5f0"/>
+      <rect x="88" y="194" width="24" height="20" rx="5" fill="url(#skinF1)"/>
+      <ellipse cx="100" cy="150" rx="55" ry="62" fill="url(#skinF1)"/>
+      <ellipse cx="100" cy="97" rx="56" ry="28" fill="#2a1a0c"/>
+      <ellipse cx="44" cy="145" rx="12" ry="52" fill="#2a1a0c"/><ellipse cx="156" cy="145" rx="12" ry="52" fill="#2a1a0c"/>
+      <ellipse cx="44" cy="153" rx="9" ry="14" fill="#d89870"/><ellipse cx="156" cy="153" rx="9" ry="14" fill="#d89870"/>
+      <circle cx="44" cy="168" r="4" fill="#c8a030" opacity=".85"/><circle cx="156" cy="168" r="4" fill="#c8a030" opacity=".85"/>
+      <path d="M 70 126 Q 82 119 95 124" stroke="#2a1a0c" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 105 124 Q 118 119 130 126" stroke="#2a1a0c" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="82" cy="140" rx="13" ry="10" fill="#f8f5f0"/><ellipse cx="118" cy="140" rx="13" ry="10" fill="#f8f5f0"/>
+      <ellipse cx="82" cy="140" rx="8.5" ry="9" fill="#3d2010"/><ellipse cx="118" cy="140" rx="8.5" ry="9" fill="#3d2010"/>
+      <ellipse cx="82" cy="140" rx="4.5" ry="5" fill="#0e0806"/><ellipse cx="118" cy="140" rx="4.5" ry="5" fill="#0e0806"/>
+      <ellipse cx="84.5" cy="137" rx="2.5" ry="2.5" fill="white" opacity=".85"/><ellipse cx="120.5" cy="137" rx="2.5" ry="2.5" fill="white" opacity=".85"/>
+      <ellipse cx="82" cy="140" rx="13" ry="10" fill="#e0aa80" class="zc-eyelid l"/>
+      <ellipse cx="118" cy="140" rx="13" ry="10" fill="#e0aa80" class="zc-eyelid r"/>
+      <path d="M 68 133 Q 75 127 82 130 Q 89 127 96 133" stroke="#0e0806" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 104 133 Q 111 127 118 130 Q 125 127 132 133" stroke="#0e0806" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="100" cy="172" rx="8" ry="5.5" fill="#c09070" opacity=".4"/>
+      <path d="M 84 185 Q 100 195 116 185" stroke="#9a5048" stroke-width="2.5" fill="none" stroke-linecap="round" id="zc-mouth-closed-f1"/>
+      <path d="M 84 185 Q 92 180 100 182 Q 108 180 116 185 Q 108 190 100 189 Q 92 190 84 185 Z" fill="#c06870" id="zc-lip-upper-f1"/>
+      <g id="zc-mouth-open-f1">
+        <ellipse cx="100" cy="191" rx="14" ry="7.5" fill="#180806"/>
+        <rect x="87" y="187" width="26" height="7.5" rx="3" fill="#edeae2" id="zc-teeth-f1"/>
+        <path d="M 84 198 Q 100 208 116 198 Q 108 203 100 204 Q 92 203 84 198 Z" fill="#c06870"/>
+      </g>
+    </svg>
+
+    <!-- Male 2: James -->
+    <svg id="zc-figure-male2" data-avatar="male2" viewBox="0 0 200 310" xmlns="http://www.w3.org/2000/svg" style="position:absolute;bottom:20%;left:50%;transform:translateX(-50%);width:52%;max-width:220px;z-index:3;display:none;animation:zc-breathe 5s ease-in-out infinite;transform-origin:bottom center">
+      <defs><radialGradient id="skinM2" cx="45%" cy="35%" r="65%"><stop offset="0%" stop-color="#f5dfc0"/><stop offset="60%" stop-color="#e8c898"/><stop offset="100%" stop-color="#d0a870"/></radialGradient></defs>
+      <path d="M 22 310 L 25 225 Q 38 210 68 205 L 85 196 L 100 212 L 115 196 L 132 205 Q 162 210 175 225 L 178 310 Z" fill="#3a3d48"/>
+      <path d="M 85 196 L 68 218 L 62 255 L 100 242 L 138 255 L 132 218 L 115 196 L 100 212 Z" fill="#1a1c22"/>
+      <path d="M 100 212 L 91 224 L 100 244 L 109 224 Z" fill="#dde5f8"/>
+      <path d="M 100 216 L 96 232 L 100 244 L 104 232 Z" fill="#c03030"/>
+      <polygon points="97.5,244 100,252 102.5,244" fill="#a02020"/>
+      <rect x="87" y="194" width="26" height="22" rx="5" fill="url(#skinM2)"/>
+      <ellipse cx="100" cy="153" rx="55" ry="62" fill="url(#skinM2)"/>
+      <ellipse cx="100" cy="98" rx="56" ry="26" fill="#8a6830"/>
+      <ellipse cx="46" cy="134" rx="11" ry="32" fill="#8a6830"/><ellipse cx="154" cy="134" rx="11" ry="32" fill="#8a6830"/>
+      <ellipse cx="45" cy="155" rx="9" ry="14" fill="#d8b880"/><ellipse cx="155" cy="155" rx="9" ry="14" fill="#d8b880"/>
+      <path d="M 68 127 Q 82 120 96 126" stroke="#6a5020" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <path d="M 104 126 Q 118 120 132 127" stroke="#6a5020" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="82" cy="141" rx="13" ry="10" fill="#f5f3ee"/><ellipse cx="118" cy="141" rx="13" ry="10" fill="#f5f3ee"/>
+      <ellipse cx="82" cy="141" rx="8.5" ry="9" fill="#4a6080"/><ellipse cx="118" cy="141" rx="8.5" ry="9" fill="#4a6080"/>
+      <ellipse cx="82" cy="141" rx="4.5" ry="5" fill="#1a2830"/><ellipse cx="118" cy="141" rx="4.5" ry="5" fill="#1a2830"/>
+      <ellipse cx="84.5" cy="138" rx="2.5" ry="2.5" fill="white" opacity=".85"/><ellipse cx="120.5" cy="138" rx="2.5" ry="2.5" fill="white" opacity=".85"/>
+      <ellipse cx="82" cy="141" rx="13" ry="10" fill="#e8c898" class="zc-eyelid l"/>
+      <ellipse cx="118" cy="141" rx="13" ry="10" fill="#e8c898" class="zc-eyelid r"/>
+      <path d="M 69 135 Q 75.5 129 82 132 Q 88.5 129 95 135" stroke="#100c06" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <path d="M 105 135 Q 111.5 129 118 132 Q 124.5 129 131 135" stroke="#100c06" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+      <ellipse cx="100" cy="173" rx="9" ry="6" fill="#c0a070" opacity=".45"/>
+      <path d="M 83 187 Q 100 196 117 187" stroke="#9a6848" stroke-width="2.8" fill="none" stroke-linecap="round" id="zc-mouth-closed-m2"/>
+      <path d="M 83 187 Q 91 183 100 184 Q 109 183 117 187 Q 109 191 100 190 Q 91 191 83 187 Z" fill="#b07858" id="zc-lip-upper-m2"/>
+      <g id="zc-mouth-open-m2">
+        <ellipse cx="100" cy="193" rx="15" ry="8" fill="#180804"/>
+        <rect x="87" y="189" width="26" height="8" rx="3" fill="#edeae2" id="zc-teeth-m2"/>
+        <path d="M 83 200 Q 100 210 117 200 Q 109 205 100 206 Q 91 205 83 200 Z" fill="#b07858"/>
+      </g>
+    </svg>
+
+    <!-- Female 2: Emma -->
+    <svg id="zc-figure-female2" data-avatar="female2" viewBox="0 0 200 310" xmlns="http://www.w3.org/2000/svg" style="position:absolute;bottom:20%;left:50%;transform:translateX(-50%);width:52%;max-width:220px;z-index:3;display:none;animation:zc-breathe 5s ease-in-out infinite;transform-origin:bottom center">
+      <defs><radialGradient id="skinF2" cx="45%" cy="35%" r="65%"><stop offset="0%" stop-color="#fce0c0"/><stop offset="60%" stop-color="#f0c898"/><stop offset="100%" stop-color="#d8a870"/></radialGradient></defs>
+      <path d="M 25 310 L 28 228 Q 42 212 70 207 L 85 198 L 100 213 L 115 198 L 130 207 Q 158 212 172 228 L 175 310 Z" fill="#8a1a1a"/>
+      <path d="M 85 198 L 72 215 L 100 238 L 128 215 L 115 198 L 100 213 Z" fill="#faf5ff"/>
+      <rect x="88" y="194" width="24" height="20" rx="5" fill="url(#skinF2)"/>
+      <ellipse cx="100" cy="150" rx="55" ry="62" fill="url(#skinF2)"/>
+      <ellipse cx="100" cy="96" rx="57" ry="27" fill="#7a2010"/>
+      <ellipse cx="44" cy="148" rx="14" ry="55" fill="#7a2010"/><ellipse cx="156" cy="148" rx="14" ry="55" fill="#7a2010"/>
+      <ellipse cx="44" cy="153" rx="9" ry="14" fill="#e0b088"/><ellipse cx="156" cy="153" rx="9" ry="14" fill="#e0b088"/>
+      <circle cx="44" cy="168" r="5" fill="#f0ece8" opacity=".9"/><circle cx="156" cy="168" r="5" fill="#f0ece8" opacity=".9"/>
+      <path d="M 70 125 Q 82 118 95 123" stroke="#5a1808" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 105 123 Q 118 118 130 125" stroke="#5a1808" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="82" cy="139" rx="13" ry="10" fill="#f8f5f0"/><ellipse cx="118" cy="139" rx="13" ry="10" fill="#f8f5f0"/>
+      <ellipse cx="82" cy="139" rx="8.5" ry="9" fill="#3a6040"/><ellipse cx="118" cy="139" rx="8.5" ry="9" fill="#3a6040"/>
+      <ellipse cx="82" cy="139" rx="4.5" ry="5" fill="#0e1808"/><ellipse cx="118" cy="139" rx="4.5" ry="5" fill="#0e1808"/>
+      <ellipse cx="84.5" cy="136" rx="2.5" ry="2.5" fill="white" opacity=".85"/><ellipse cx="120.5" cy="136" rx="2.5" ry="2.5" fill="white" opacity=".85"/>
+      <ellipse cx="82" cy="139" rx="13" ry="10" fill="#f0c898" class="zc-eyelid l"/>
+      <ellipse cx="118" cy="139" rx="13" ry="10" fill="#f0c898" class="zc-eyelid r"/>
+      <path d="M 68 132 Q 75 126 82 129 Q 89 126 96 132" stroke="#0e0806" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M 104 132 Q 111 126 118 129 Q 125 126 132 132" stroke="#0e0806" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <ellipse cx="100" cy="171" rx="8" ry="5.5" fill="#c09878" opacity=".38"/>
+      <path d="M 84 184 Q 100 194 116 184" stroke="#b04858" stroke-width="2.5" fill="none" stroke-linecap="round" id="zc-mouth-closed-f2"/>
+      <path d="M 84 184 Q 92 179 100 181 Q 108 179 116 184 Q 108 189 100 188 Q 92 189 84 184 Z" fill="#d05868" id="zc-lip-upper-f2"/>
+      <g id="zc-mouth-open-f2">
+        <ellipse cx="100" cy="190" rx="14" ry="7.5" fill="#180806"/>
+        <rect x="87" y="186" width="26" height="7.5" rx="3" fill="#edeae2" id="zc-teeth-f2"/>
+        <path d="M 84 197 Q 100 207 116 197 Q 108 202 100 203 Q 92 202 84 197 Z" fill="#d05868"/>
+      </g>
+    </svg>
+
+    <!-- Idle overlay -->
+    <div class="zc-idle-overlay visible" id="zc-idle-overlay">
+      <div class="zc-idle-icon">🎤</div>
+      <div class="zc-idle-label" id="zc-idle-name">Alex Chen</div>
+      <div class="zc-idle-sub">Waiting to connect…</div>
+    </div>
+
+    <!-- Name badge -->
+    <div class="zc-badge">
+      <div class="zc-avatar-dot">🎓</div>
+      <div>
+        <div id="zc-name" style="font-weight:700;letter-spacing:.02em">Alex Chen</div>
+        <div style="font-size:8px;color:rgba(150,165,210,.6)" id="zc-role-tag">Senior Engineer · Interviewer</div>
+      </div>
+    </div>
+
+    <!-- Speaking bars -->
+    <div class="zc-speaking-bar">
+      <div class="zc-bar"></div><div class="zc-bar"></div><div class="zc-bar"></div>
+      <div class="zc-bar"></div><div class="zc-bar"></div>
+    </div>
+
+    <!-- PiP -->
+    <div class="zc-pip">
+      👤
+      <span class="zc-pip-label">You</span>
+      <span class="zc-pip-mic-off">🎙</span>
+    </div>
+  </div>
+  <!-- ══════════════════════════════ END ZOOM CARD -->
+
+  <!-- Question card (injected by JS) -->
+  <div id="question-area"></div>
+
+</main>
+
+<!-- ══════════════════════════════════════════════ RIGHT SIDEBAR — SCORES -->
+<aside id="scores">
+  <div class="scores-header">
+    <div>
+      <div class="scores-title">Session Scores</div>
+      <div class="scores-subtitle">pronunciation per answer</div>
+    </div>
+  </div>
+
+  <div class="avg-box" id="avg-box">
+    <div class="avg-label">Average</div>
+    <div class="avg-val" id="avg-val">—</div>
+  </div>
+
+  <div id="score-list">
+    <div class="score-empty">Scores appear here<br>as you answer.</div>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════════ FOOTER -->
+<footer>
+  <span id="footer-status">Interviewer · AI Mock Interview</span>
+  <span id="footer-session" style="margin-left:auto"></span>
+</footer>
+
+<!-- ══════════════════════════════════════════════ SUMMARY OVERLAY -->
+<div id="summary-overlay">
+  <div class="summary-card">
+    <div class="summary-title">Interview Complete</div>
+    <div class="summary-role" id="sum-role">Machine Learning Engineer · Mid</div>
+
+    <div class="summary-stats">
+      <div class="stat-block">
+        <div class="stat-num" id="sum-avg" style="color:var(--accent)">—</div>
+        <div class="stat-label">Avg pronunciation</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num" id="sum-count" style="color:var(--accent2)">0/0</div>
+        <div class="stat-label">Questions answered</div>
+      </div>
+    </div>
+
+    <div class="summary-section-label">Overall Feedback</div>
+    <div class="summary-text" id="sum-text">Generating summary…</div>
+
+    <div class="summary-actions">
+      <button class="summary-btn"         onclick="closeSummary()">Review Answers</button>
+      <button class="summary-btn primary" onclick="resetInterview()">New Interview</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DB Floating Button ══ -->
+<button class="db-fab" id="db-fab" onclick="openDB()" title="Database Builder">
+  <span style="font-size:18px">🗄</span>
+  <span class="db-fab-label">DB</span>
+  <span class="db-fab-count" id="db-fab-count">0</span>
+</button>
+
+<!-- ══ DB Modal ══ -->
+<div class="db-overlay" id="db-overlay">
+  <div class="db-modal">
+
+    <div class="db-header">
+      <div>
+        <div class="db-title">🗄 Interview Database</div>
+        <div class="db-subtitle" id="db-stat-line">Loading…</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="db-reset-btn" onclick="dbResetUsed()" title="Reset used questions history — all questions become available again">
+          🔄 Reset Used
+        </button>
+        <button class="db-close" onclick="closeDB()">✕</button>
+      </div>
+    </div>
+
+    <div class="db-body">
+
+      <!-- Left: Add / Edit form -->
+      <div class="db-form-col">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div class="db-section-title" id="db-form-title">➕ Add New Record</div>
+          <label class="db-import-btn" title="Import from JSON file">
+            📂 Import JSON
+            <input type="file" accept=".json" style="display:none" onchange="dbImportJSON(this)"/>
+          </label>
+        </div>
+
+        <input type="hidden" id="db-edit-id"/>
+
+        <div class="db-field">
+          <label class="db-label">Question <span style="color:var(--warn)">*</span></label>
+          <textarea class="db-input" id="db-q" rows="3" placeholder="e.g. What is gradient descent?"></textarea>
+        </div>
+
+        <div class="db-field">
+          <label class="db-label">Answer / Hint <span style="color:var(--warn)">*</span></label>
+          <textarea class="db-input" id="db-a" rows="5" placeholder="Write a complete model answer here…"></textarea>
+        </div>
+
+        <div class="db-row">
+          <div class="db-field" style="flex:1">
+            <label class="db-label">Role</label>
+            <input class="db-input" id="db-role" type="text" placeholder="e.g. ML Engineer" list="db-role-list"/>
+            <datalist id="db-role-list"></datalist>
+          </div>
+          <div class="db-field" style="width:110px">
+            <label class="db-label">Difficulty</label>
+            <select class="db-input" id="db-diff">
+              <option value="">Any</option>
+              <option value="junior">Junior</option>
+              <option value="mid">Mid</option>
+              <option value="senior">Senior</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="db-field">
+          <label class="db-label">Tags <span style="color:var(--muted);font-size:9px">(comma separated)</span></label>
+          <input class="db-input" id="db-tags" type="text" placeholder="e.g. python, optimization"/>
+        </div>
+
+        <div class="db-form-actions">
+          <button class="db-btn-save" onclick="dbSave()">💾 Save</button>
+          <button class="db-btn-cancel" id="db-cancel-edit-btn" onclick="dbCancelEdit()" style="display:none">Cancel</button>
+        </div>
+        <div class="db-msg" id="db-msg"></div>
+      </div>
+
+      <!-- Right: Records table -->
+      <div class="db-table-col">
+        <div class="db-filter-bar">
+          <input class="db-search" id="db-search" type="text" placeholder="🔍  Search questions, answers, tags…" oninput="dbFilter()"/>
+          <select class="db-filter-select" id="db-filter-diff" onchange="dbFilter()">
+            <option value="">All levels</option>
+            <option value="junior">Junior</option>
+            <option value="mid">Mid</option>
+            <option value="senior">Senior</option>
+          </select>
+        </div>
+        <div class="db-stats-row" id="db-stats-row"></div>
+        <div class="db-table-wrap">
+          <table class="db-table" id="db-table">
+            <thead>
+              <tr>
+                <th style="width:40%">Question</th>
+                <th style="width:30%">Answer</th>
+                <th style="width:12%">Role</th>
+                <th style="width:8%">Level</th>
+                <th style="width:10%">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="db-tbody">
+              <tr><td colspan="5" class="db-empty">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="db-table-footer" id="db-table-footer"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ── Scripts (load order matters: state → utils → modules) ── -->
+<script src="/static/js/state.js?v=1773802718"></script>
+<script src="/static/js/utils.js?v=1773802718"></script>
+<script src="/static/js/avatar.js?v=1773802718"></script>
+<script src="/static/js/health.js?v=1773802718"></script>
+<script src="/static/js/setup.js?v=1773802718"></script>
+<script src="/static/js/session.js?v=1773802718"></script>
+<script src="/static/js/interview.js?v=1773802718"></script>
+<script src="/static/js/database.js?v=1773802718"></script>
+</body>
+</html>
