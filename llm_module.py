@@ -130,36 +130,77 @@ Return only the questions — no numbering, no preamble, no explanations."""
 
 def generate_questions(
     role:         str,
-    difficulty:   str = "mid",    # "junior" | "mid" | "senior"
+    difficulty:   str = "mid",
     count:        int = 5,
     focus_areas:  list[str] | None = None,
 ) -> list[str]:
     """
-    Generate `count` interview questions for a given role and difficulty.
-    Returns a plain list of question strings.
+    Generate `count` interview questions.
+    Tries one batch call first; falls back to one-by-one if batch truncates.
     """
-    focus = ""
-    if focus_areas:
-        focus = f"Focus on these areas: {', '.join(focus_areas)}."
+    focus = f"Focus on: {', '.join(focus_areas)}." if focus_areas else ""
 
-    prompt = f"""List {count} {difficulty} {role} interview questions.
-{focus}One per line. Questions only."""
+    def _parse(raw: str) -> list[str]:
+        out = []
+        for line in raw.splitlines():
+            line = line.strip().lstrip("0123456789.-) *•").strip()
+            if len(line) < 15:
+                continue
+            if any(line.lower().startswith(p) for p in (
+                "here are", "below are", "note:", "format:", "sure", "of course",
+                "i'll", "i will", "certainly", "absolutely"
+            )):
+                continue
+            out.append(line)
+        return out
 
-    raw = _complete(prompt, system=SYSTEM_INTERVIEWER, max_tokens=180)
+    # ── Attempt 1: batch call ─────────────────────────────────────────────────
+    prompt = (
+        f"List exactly {count} interview questions for a {difficulty}-level {role}.\n"
+        f"{focus}One question per line. No numbering. No extra text."
+    )
+    try:
+        raw       = _complete(prompt, system=SYSTEM_INTERVIEWER, max_tokens=count * 80 + 100)
+        questions = _parse(raw)
+    except Exception:
+        questions = []
 
-    # Parse — one question per non-empty line
-    questions = [
-        line.strip().lstrip("0123456789.-) ").strip()
-        for line in raw.splitlines()
-        if line.strip() and "?" in line
+    if len(questions) >= count:
+        return questions[:count]
+
+    # ── Attempt 2: one-by-one for missing slots ───────────────────────────────
+    existing = set(q.lower()[:40] for q in questions)
+    while len(questions) < count:
+        n = len(questions) + 1
+        prompt2 = (
+            f"Write interview question number {n} of {count} "
+            f"for a {difficulty}-level {role}. "
+            f"{focus}One sentence only. Do not repeat previous questions."
+        )
+        try:
+            raw2 = _complete(prompt2, system=SYSTEM_INTERVIEWER, max_tokens=80)
+            for line in _parse(raw2):
+                if line.lower()[:40] not in existing:
+                    questions.append(line)
+                    existing.add(line.lower()[:40])
+                    break
+        except Exception:
+            break
+
+    # ── Fallback: generic questions if still short ────────────────────────────
+    fallbacks = [
+        f"Explain the most important concept in {role} work.",
+        f"Describe a challenging {difficulty}-level {role} problem you have solved.",
+        f"What tools or frameworks are essential for a {role}?",
+        f"How do you approach debugging a complex issue as a {role}?",
+        f"What does success look like for a {difficulty}-level {role}?",
     ]
-
-    # Fallback: split on newlines if no "?" found
-    if not questions:
-        questions = [l.strip() for l in raw.splitlines() if len(l.strip()) > 10]
+    for fb in fallbacks:
+        if len(questions) >= count:
+            break
+        questions.append(fb)
 
     return questions[:count]
-
 
 # ── Answer feedback ───────────────────────────────────────────────────────────
 
@@ -186,7 +227,7 @@ Candidate answered: "{answer}"
 
 Give brief feedback (2–3 sentences) on the quality and completeness of this answer."""
 
-    return _complete(prompt, system=SYSTEM_FEEDBACK, max_tokens=150)
+    return _complete(prompt, system=SYSTEM_FEEDBACK, max_tokens=120)
 
 
 def feedback_stream(
@@ -231,7 +272,7 @@ Question: "{question}"
 Write a concise model answer (3–5 sentences) that a strong candidate would give.
 Focus on what to say, not how to say it."""
 
-    return _complete(prompt, system=SYSTEM_HINT, max_tokens=200)
+    return _complete(prompt, system=SYSTEM_HINT, max_tokens=150)
 
 
 def hint_stream(
@@ -281,7 +322,7 @@ Write a 4–5 sentence overall assessment covering:
 2. Answer depth and relevance
 3. One specific strength and one area to improve"""
 
-    return _complete(prompt, system=SYSTEM_SUMMARY, max_tokens=250)
+    return _complete(prompt, system=SYSTEM_SUMMARY, max_tokens=180)
 
 
 # ── Answer content scoring ────────────────────────────────────────────────────
@@ -338,4 +379,70 @@ Rate this answer 0-10. Return only JSON."""
 
 def _score_label(s: int) -> str:
     labels = ["No answer","Poor","Weak","Basic","Fair","Good","Strong","Excellent","Outstanding","Outstanding","Perfect"]
+    return labels[max(0, min(10, s))]# ── Answer scoring ────────────────────────────────────────────────────────────
+
+def score_answer(
+    question:   str,
+    answer:     str,
+    hint:       str = "",
+    role:       str = "",
+    difficulty: str = "mid",
+) -> dict:
+    """
+    Rate the candidate's answer 0-10 using the LLM.
+    Designed for llama3.2:1b — does NOT require JSON output.
+    Parses score from plain text like "Score: 7" or just "7/10".
+    """
+    import re as _re
+    import json as _json
+
+    # Handle no-answer cases immediately without LLM call
+    text = (answer or "").strip().lower()
+    if not text or text in ("i don't know", "i do not know", "idk", "no idea", "?", "pass", "skip"):
+        return {"score": 0, "label": "No Answer", "feedback": "Candidate did not provide an answer."}
+
+    hint_line = f"\nModel answer: {hint[:300]}" if hint else ""
+
+    # Simple prompt — no JSON required, just a number
+    prompt = f"""You are rating a technical interview answer.
+Question: {question[:200]}
+Candidate answer: {answer[:300]}{hint_line}
+
+Give a score from 0 to 10 where:
+0 = no answer or completely wrong
+3 = partial, missing key points  
+5 = adequate, covers basics
+7 = solid and mostly correct
+10 = excellent, complete answer
+
+Respond with just: Score: X
+Then one sentence of feedback."""
+
+    try:
+        raw = _complete(prompt, system="", max_tokens=80)
+        raw = raw.strip()
+
+        # Try to extract score from "Score: X" pattern
+        m = _re.search(r'[Ss]core\s*[:=]?\s*(\d+)', raw)
+        if not m:
+            # Try any standalone number 0-10
+            m = _re.search(r'\b(10|[0-9])\b', raw)
+
+        if m:
+            score = max(0, min(10, int(m.group(1))))
+            # Extract feedback = everything after the score line
+            lines = [l.strip() for l in raw.split('\n') if l.strip()]
+            feedback = next((l for l in lines if not _re.search(r"^[Ss]core", l) and len(l) > 10), "")
+            return {"score": score, "label": _score_label(score), "feedback": feedback}
+
+    except Exception:
+        pass
+
+    # Final heuristic fallback
+    score = 3 if len(text) > 20 else 1
+    return {"score": score, "label": _score_label(score), "feedback": "Could not evaluate automatically."}
+
+
+def _score_label(s: int) -> str:
+    labels = ["No Answer","Poor","Weak","Basic","Fair","Good","Strong","Excellent","Outstanding","Outstanding","Perfect"]
     return labels[max(0, min(10, s))]

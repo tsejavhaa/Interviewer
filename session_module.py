@@ -68,6 +68,11 @@ class QuestionEntry:
     # Origin: "db" = from JSON database, "llm" = LLM generated
     source: str = "llm"
 
+    # Content quality score (LLM rates 0-10)
+    content_score:    int = -1   # -1 = not yet rated
+    content_label:    str = ""
+    content_feedback: str = ""
+
     # Timing
     asked_at:    float = 0.0
     answered_at: float = 0.0

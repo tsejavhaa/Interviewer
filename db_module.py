@@ -35,7 +35,14 @@ def _load() -> list[dict]:
     if not DB_FILE.exists():
         DB_FILE.write_text("[]")
     try:
-        return json.loads(DB_FILE.read_text())
+        records = json.loads(DB_FILE.read_text())
+        # Normalize difficulty + role casing (fix legacy imports)
+        for r in records:
+            if "difficulty" in r:
+                r["difficulty"] = r["difficulty"].strip().lower()
+            if "role" in r:
+                r["role"] = r["role"].strip()
+        return records
     except Exception:
         return []
 

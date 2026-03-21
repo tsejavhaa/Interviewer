@@ -38,8 +38,9 @@ async def create_session(
         count=num_questions, focus_areas=focus or None,
     )
 
-    llm_needed = num_questions - db_count
-    llm_questions: list[str] = []
+    # ── If DB has enough questions, use them only. LLM only fills the gap. ──
+    llm_needed    = max(0, num_questions - db_count)
+    llm_questions : list[str] = []
 
     if llm_needed > 0:
         try:
@@ -49,12 +50,22 @@ async def create_session(
                 count=llm_needed, focus_areas=focus or None,
             )
         except Exception as exc:
-            session_module.clear_session()
-            raise HTTPException(500, f"LLM error: {exc}")
+            if db_count == 0:
+                session_module.clear_session()
+                raise HTTPException(503,
+                    "Could not generate questions — is Ollama running? Run: ollama serve"
+                )
+            # LLM failed but DB has enough — just use DB questions
+            llm_questions = []
+            llm_needed    = 0
 
-        # Pad if LLM returned fewer than expected
+        # Pad if LLM returned fewer than needed
         while len(llm_questions) < llm_needed:
-            llm_questions.append(f"Tell me about your experience as a {role}.")
+            llm_questions.append(
+                f"Describe a challenging {role} problem you solved and how you approached it."
+                if len(llm_questions) % 2 == 0 else
+                f"What are the most important skills for a {difficulty}-level {role}?"
+            )
 
     # ── Build QuestionEntry list: DB records first, then LLM ─────────────────
     idx = 0
@@ -148,19 +159,6 @@ async def submit_answer(index: int, audio: UploadFile = File(...)):
     q_entry.pronunciation_grade = pron_report["grade"]
     q_entry.pronunciation_words = pron_report.get("words", [])
 
-    # ── Content scoring (LLM rates answer quality 0-10) ──────────────────────
-    content_result = await asyncio.to_thread(
-        llm_module.score_answer,
-        question   = question,
-        answer     = transcript,
-        hint       = getattr(q_entry, "hint_cache", ""),
-        role       = sess.role,
-        difficulty = sess.difficulty,
-    )
-    q_entry.content_score    = content_result["score"]
-    q_entry.content_label    = content_result["label"]
-    q_entry.content_feedback = content_result["feedback"]
-
     if sess.answered_count() >= len(sess.questions):
         sess.state        = SessionState.COMPLETED
         sess.completed_at = time.time()
@@ -175,11 +173,7 @@ async def submit_answer(index: int, audio: UploadFile = File(...)):
             "words":    pron_report.get("words", []),
             "feedback": pron_report.get("feedback", ""),
         },
-        "content": {
-            "score":    content_result["score"],
-            "label":    content_result["label"],
-            "feedback": content_result["feedback"],
-        },
+        "content": None,  # populated async via /session/content-score/{index}
         "session_done": sess.state == SessionState.COMPLETED,
     }
 
@@ -198,22 +192,25 @@ async def feedback_stream(index: int):
     async def _gen():
         full = ""
         try:
-            tokens = await asyncio.to_thread(
-                lambda: list(llm_module.feedback_stream(
-                    question=q_entry.question,
-                    answer=q_entry.answer_text,
-                    role=sess.role,
-                ))
-            )
-            for token in tokens:
+            # Stream tokens one by one directly (true streaming)
+            for token in llm_module.feedback_stream(
+                question=q_entry.question,
+                answer=q_entry.answer_text,
+                role=sess.role,
+            ):
                 full += token
                 yield f"data: {json.dumps({'token': token, 'done': False})}\n\n"
+                await asyncio.sleep(0)   # yield control to event loop
+
             q_entry.llm_feedback = full
             yield f"data: {json.dumps({'token': '', 'done': True, 'full': full})}\n\n"
+
         except Exception as exc:
             msg = f"Feedback unavailable: {exc}"
             q_entry.llm_feedback = msg
             yield f"data: {json.dumps({'token': msg, 'done': True, 'full': msg})}\n\n"
+
+        # Scoring is handled by POST /session/rate/{index} called by frontend
 
     return StreamingResponse(
         _gen(), media_type="text/event-stream",
@@ -273,6 +270,51 @@ async def hint_stream(index: int):
 
 
 # ── Session summary ────────────────────────────────────────────────────────────
+
+
+@router.post("/rate/{index}")
+async def rate_answer(index: int):
+    """
+    Called by frontend after feedback stream finishes.
+    Runs score_answer synchronously and returns result immediately.
+    """
+    sess = session_module.get_session_or_raise()
+    if index >= len(sess.questions):
+        raise HTTPException(404)
+    q = sess.questions[index]
+    try:
+        r = await asyncio.to_thread(
+            llm_module.score_answer,
+            question   = q.question,
+            answer     = q.answer_text,
+            hint       = getattr(q, "hint_cache", ""),
+            role       = sess.role,
+            difficulty = sess.difficulty,
+        )
+        q.content_score    = r.get("score",    0)
+        q.content_label    = r.get("label",    "")
+        q.content_feedback = r.get("feedback", "")
+        return {"score": q.content_score, "label": q.content_label, "feedback": q.content_feedback}
+    except Exception as e:
+        q.content_score = 0
+        q.content_label = "Error"
+        q.content_feedback = str(e)
+        return {"score": 0, "label": "Error", "feedback": str(e)}
+
+@router.get("/content-score/{index}")
+async def get_content_score(index: int):
+    """Poll for content quality score (set after feedback stream completes)."""
+    sess = session_module.get_session_or_raise()
+    if index >= len(sess.questions):
+        raise HTTPException(404)
+    q = sess.questions[index]
+    score = getattr(q, "content_score", -1)
+    return {
+        "ready":    score >= 0,
+        "score":    score,
+        "label":    getattr(q, "content_label",    ""),
+        "feedback": getattr(q, "content_feedback", ""),
+    }
 
 @router.get("/summary")
 async def session_summary():

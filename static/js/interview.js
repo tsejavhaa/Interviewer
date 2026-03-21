@@ -204,12 +204,12 @@ async function handleAnswerStop(idx) {
     if (!res.ok) throw new Error(data.detail || 'Submit failed');
 
     showAnswerResult(idx, data);
-    session.questions[idx].answered           = true;
-    session.questions[idx].answer_text        = data.transcript;
+    session.questions[idx].answered            = true;
+    session.questions[idx].answer_text         = data.transcript;
     session.questions[idx].pronunciation_score = data.pronunciation?.score || 0;
     updateProgress();
     addScoreItem(idx, data);
-    streamFeedback(idx, data.session_done);
+    streamFeedback(idx, data.session_done);  // rating called inside streamFeedback after done
   } catch(err) {
     setRecStatus(idx, 'recording', `⚠ ${err.message} — try again`);
     if (recBtn) { recBtn.disabled = false; recBtn.textContent = '🎤'; }
@@ -271,6 +271,28 @@ function showAnswerResult(idx, data) {
     }
   } 
 
+  // Show content score block with animated evaluating state
+  const csWrap = document.getElementById('content-score-wrap-' + idx);
+  if (csWrap) {
+    csWrap.style.display = 'block';
+    const numEl = document.getElementById('content-score-num-' + idx);
+    const lblEl = document.getElementById('content-score-label-' + idx);
+    const fbEl  = document.getElementById('content-score-fb-' + idx);
+    if (numEl) { numEl.textContent = ''; numEl.style.color = 'var(--muted)'; }
+    if (lblEl) { lblEl.textContent = '⏳ Evaluating your answer…'; lblEl.style.color = 'var(--sub)'; lblEl.style.fontSize = '11px'; }
+    if (fbEl)  { fbEl.textContent  = 'AI is rating your response based on the model answer. This may take 15–30 seconds on slower hardware.'; fbEl.style.color = 'var(--muted)'; }
+    // Animate dots while waiting
+    let dots = 0;
+    window['_ratingTimer_' + idx] = setInterval(() => {
+      if (!document.getElementById('content-score-wrap-' + idx)) return;
+      const el = document.getElementById('content-score-label-' + idx);
+      if (el && el.textContent.startsWith('⏳')) {
+        dots = (dots + 1) % 4;
+        el.textContent = '⏳ Evaluating' + '.'.repeat(dots);
+      }
+    }, 600);
+  }
+
   document.getElementById(`result-${idx}`).classList.add('visible');
   setRecStatus(idx, 'done', '✓ Answer recorded');
   zcSetDone();
@@ -285,6 +307,49 @@ function showAnswerResult(idx, data) {
     el.textContent = cur + '%';
     if (cur >= score) clearInterval(tick);
   }, 28);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   ANSWER QUALITY RATING  (called after feedback stream done)
+═══════════════════════════════════════════════════════════════ */
+async function rateAnswer(idx) {
+  const numEl  = document.getElementById('content-score-num-'   + idx);
+  const lblEl  = document.getElementById('content-score-label-' + idx);
+  const fbEl   = document.getElementById('content-score-fb-'    + idx);
+  const csWrap = document.getElementById('content-score-wrap-'  + idx);
+  if (csWrap) csWrap.style.display = 'block';
+
+  try {
+    const res  = await fetch(`${API}/session/rate/${idx}`, { method: 'POST' });
+    const data = await res.json();
+
+    // Clear evaluating timer
+    if (window['_ratingTimer_' + idx]) {
+      clearInterval(window['_ratingTimer_' + idx]);
+      delete window['_ratingTimer_' + idx];
+    }
+
+    const s     = data.score ?? 0;
+    const color = contentScoreColor(s);
+
+    if (numEl) { numEl.textContent = s + '/10'; numEl.style.color = color; numEl.style.fontSize = '32px'; }
+    if (lblEl) { lblEl.textContent = data.label || ''; lblEl.style.color = color; lblEl.style.fontSize = '13px'; }
+    if (fbEl)  { fbEl.textContent  = data.feedback || ''; fbEl.style.color = 'var(--sub)'; }
+
+    // Update sidebar
+    const sideNumEl = document.getElementById('side-cscore-' + idx);
+    const sideLblEl = document.getElementById('side-clabel-' + idx);
+    const sideBarEl = document.getElementById('side-cbar-'   + idx);
+    if (sideNumEl) { sideNumEl.textContent = s + '/10'; sideNumEl.style.color = color; }
+    if (sideLblEl) { sideLblEl.textContent = data.label || ''; sideLblEl.style.color = color; }
+    if (sideBarEl) { sideBarEl.style.width = (s * 10) + '%'; sideBarEl.style.background = color; }
+
+  } catch(e) {
+    if (window['_ratingTimer_' + idx]) { clearInterval(window['_ratingTimer_' + idx]); }
+    if (lblEl) { lblEl.textContent = 'Could not rate'; lblEl.style.color = 'var(--muted)'; }
+    if (fbEl)  fbEl.textContent = 'Rating failed: ' + e.message;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -304,14 +369,19 @@ async function streamFeedback(idx, sessionDone) {
         es.close();
         fbEl.textContent = d.full || full;
         if (next) next.style.display = 'block';
-        if (sessionDone) setTimeout(() => showSummary(), 600);
+        // Call rate endpoint now that Ollama is free
+        rateAnswer(idx);
+        const allAnswered = session && session.questions.every(q => q.answered);
+        if (sessionDone && allAnswered) setTimeout(() => showSummary(), 600);
       }
     };
     es.onerror = () => {
       es.close();
       if (!full) fbEl.textContent = 'Feedback unavailable — is Ollama running?';
       if (next) next.style.display = 'block';
-      if (sessionDone) setTimeout(() => showSummary(), 300);
+      rateAnswer(idx);
+      const allAnswered = session && session.questions.every(q => q.answered);
+      if (sessionDone && allAnswered) setTimeout(() => showSummary(), 300);
     };
   } catch {
     fbEl.textContent = 'Feedback error.';
@@ -358,7 +428,11 @@ async function streamHint(idx) {
 ═══════════════════════════════════════════════════════════════ */
 function nextQuestion(idx) {
   const next = idx + 1;
-  if (next >= session.questions.length) { showSummary(); return; }
+  if (next >= session.questions.length) {
+    const allAnswered = session.questions.every(q => q.answered);
+    if (allAnswered) showSummary();
+    return;
+  }
   currentIndex = next;
   renderQuestion(next);
   document.getElementById('question-area').scrollIntoView({ behavior:'smooth' });
@@ -391,7 +465,13 @@ function addScoreItem(idx, data) {
         <span class="score-item-val" style="color:${color}">${score}%</span>
       </div>
     </div>
-    ${cScore >= 0 ? `<div style="font-family:var(--mono);font-size:9px;color:${cColor};margin-bottom:3px;font-weight:700">${escHtml(cLabel)}: ${escHtml(cFb)}</div>` : ''}
+    <div style="font-family:var(--mono);font-size:9px;font-weight:700;margin-bottom:2px">
+      Answer: <span id="side-cscore-${idx}" style="color:${cColor}">${cScore >= 0 ? cScore + '/10' : '…'}</span>
+      <span id="side-clabel-${idx}" style="color:${cColor}">${cScore >= 0 ? cLabel : ''}</span>
+    </div>
+    <div class="score-track" style="margin-bottom:4px">
+      <div class="score-bar-fill" id="side-cbar-${idx}" style="width:${cScore >= 0 ? cScore*10 : 0}%;background:${cColor};transition:width .6s ease"></div>
+    </div>
     <div class="score-track"><div class="score-bar-fill" style="width:0%;background:${color}" id="sbar-${idx}"></div></div>
     <div class="score-item-fb">${escHtml(pron.feedback)}</div>`;
   list.appendChild(item);
@@ -433,13 +513,15 @@ function showSummaryFromSession() {
 }
 function closeSummary() { document.getElementById('summary-overlay').classList.remove('visible'); }
 async function resetInterview() {
+  // Block health check from restoring the completed session
+  window._sessionCancelled = true;
+  session = null; currentIndex = 0;
+
   document.getElementById('sidebar').classList.remove('inactive');
-  // Restore Begin button, hide Cancel
   const startBtn = document.getElementById('start-btn');
   if (startBtn) { startBtn.style.display = ''; startBtn.disabled = false; startBtn.textContent = 'Begin Interview'; }
   const cb = document.getElementById('cancel-btn');
   if (cb) cb.classList.remove('visible');
-  session = null; currentIndex = 0;
   await fetch(`${API}/session`, { method:'DELETE' }).catch(()=>{});
   // NOTE: _sessionCancelled is intentionally NOT cleared here.
   // It is only cleared in startInterview() when a new session begins.
