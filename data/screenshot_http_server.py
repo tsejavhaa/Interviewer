@@ -20,6 +20,8 @@ import json
 import os
 import subprocess
 import tempfile
+import threading
+import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from io import BytesIO
 from urllib.parse import parse_qs, urlparse
@@ -32,6 +34,8 @@ try:
     HAS_QUARTZ = True
 except ImportError:
     HAS_QUARTZ = False
+
+FRAME_REFRESH_SECONDS = 0.12
 
 
 def screen_recording_permission_granted() -> bool | None:
@@ -138,6 +142,58 @@ def capture_screen_image() -> Image.Image:
         return img.copy()
 
 
+class FrameCache:
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._latest_image: Image.Image | None = None
+        self._latest_error = ""
+        self._latest_timestamp = 0.0
+        self._stop_event = threading.Event()
+        self._thread: threading.Thread | None = None
+
+    def start(self):
+        if self._thread and self._thread.is_alive():
+            return
+        self._stop_event.clear()
+        self._thread = threading.Thread(target=self._worker, daemon=True)
+        self._thread.start()
+
+    def stop(self):
+        self._stop_event.set()
+        if self._thread and self._thread.is_alive():
+            self._thread.join(timeout=1.0)
+
+    def _worker(self):
+        while not self._stop_event.is_set():
+            started = time.perf_counter()
+            try:
+                image = capture_screen_image()
+                with self._lock:
+                    self._latest_image = image
+                    self._latest_error = ""
+                    self._latest_timestamp = time.time()
+            except Exception as e:
+                with self._lock:
+                    self._latest_error = str(e)
+            elapsed = time.perf_counter() - started
+            sleep_for = max(0.01, FRAME_REFRESH_SECONDS - elapsed)
+            self._stop_event.wait(sleep_for)
+
+    def snapshot(self) -> tuple[Image.Image | None, float, str]:
+        with self._lock:
+            image = self._latest_image.copy() if self._latest_image is not None else None
+            return image, self._latest_timestamp, self._latest_error
+
+    def frame_age_seconds(self) -> float | None:
+        with self._lock:
+            if self._latest_timestamp <= 0:
+                return None
+            return max(0.0, time.time() - self._latest_timestamp)
+
+
+FRAME_CACHE = FrameCache()
+
+
 def _parse_positive_int(value: str | None, default: int, *, minimum: int, maximum: int) -> int:
     if value is None or value == "":
         return default
@@ -161,7 +217,9 @@ def build_image_bytes(
 
     wants_resize = max_width > 0 or max_height > 0
     wants_jpeg = fmt in {"jpeg", "jpg"}
-    image = capture_screen_image()
+    image, _timestamp, _error = FRAME_CACHE.snapshot()
+    if image is None:
+        image = capture_screen_image()
     working = image.convert("RGB") if wants_jpeg else image.copy()
 
     if wants_resize:
@@ -192,6 +250,7 @@ class ScreenshotHandler(BaseHTTPRequestHandler):
                     "ok": True,
                     "screen_recording_permission": permission,
                     "capture_backend": capture_backend_name(),
+                    "frame_age_seconds": FRAME_CACHE.frame_age_seconds(),
                 }
             ).encode("utf-8")
             self.send_response(200)
@@ -285,6 +344,7 @@ def main():
         print(f"Screen Recording access request result: {result}")
 
     permission = screen_recording_permission_granted()
+    FRAME_CACHE.start()
     server = ThreadingHTTPServer((args.host, args.port), ScreenshotHandler)
     print(f"Screenshot server listening on http://{args.host}:{args.port}")
     print("Endpoints:")
@@ -298,6 +358,7 @@ def main():
     except KeyboardInterrupt:
         pass
     finally:
+        FRAME_CACHE.stop()
         server.server_close()
 
 
