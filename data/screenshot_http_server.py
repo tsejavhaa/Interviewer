@@ -26,6 +26,13 @@ from urllib.parse import parse_qs, urlparse
 
 from PIL import Image
 
+try:
+    import Quartz
+
+    HAS_QUARTZ = True
+except ImportError:
+    HAS_QUARTZ = False
+
 
 def screen_recording_permission_granted() -> bool | None:
     """
@@ -76,6 +83,61 @@ def capture_png_bytes() -> bytes:
             pass
 
 
+def capture_backend_name() -> str:
+    return "quartz" if HAS_QUARTZ else "screencapture"
+
+
+def _cgimage_to_pil(cg_image) -> Image.Image | None:
+    if cg_image is None:
+        return None
+    try:
+        width = int(Quartz.CGImageGetWidth(cg_image))
+        height = int(Quartz.CGImageGetHeight(cg_image))
+        if width <= 0 or height <= 0:
+            return None
+
+        bytes_per_row = width * 4
+        color_space = Quartz.CGColorSpaceCreateDeviceRGB()
+        bitmap_info = Quartz.kCGImageAlphaNoneSkipFirst | Quartz.kCGBitmapByteOrder32Host
+        context = Quartz.CGBitmapContextCreate(
+            None,
+            width,
+            height,
+            8,
+            bytes_per_row,
+            color_space,
+            bitmap_info,
+        )
+        if context is None:
+            return None
+
+        Quartz.CGContextDrawImage(context, ((0, 0), (width, height)), cg_image)
+        ptr = Quartz.CGBitmapContextGetData(context)
+        if ptr is None:
+            return None
+
+        raw = bytes((ctypes.c_uint8 * (bytes_per_row * height)).from_address(int(ptr)))
+        return Image.frombuffer("RGBA", (width, height), raw, "raw", "BGRA", 0, 1).convert("RGB")
+    except Exception as e:
+        print(f"[Quartz capture] {e}")
+        return None
+
+
+def capture_screen_image() -> Image.Image:
+    if HAS_QUARTZ:
+        try:
+            display_id = Quartz.CGMainDisplayID()
+            cg_image = Quartz.CGDisplayCreateImage(display_id)
+            image = _cgimage_to_pil(cg_image)
+            if image is not None:
+                return image
+        except Exception as e:
+            print(f"[Quartz capture] Falling back to screencapture: {e}")
+
+    with Image.open(BytesIO(capture_png_bytes())) as img:
+        return img.copy()
+
+
 def _parse_positive_int(value: str | None, default: int, *, minimum: int, maximum: int) -> int:
     if value is None or value == "":
         return default
@@ -93,33 +155,27 @@ def build_image_bytes(
     max_width: int = 0,
     max_height: int = 0,
 ) -> tuple[bytes, str]:
-    source = capture_png_bytes()
-
     fmt = (image_format or "png").strip().lower()
     if fmt not in {"png", "jpeg", "jpg"}:
         fmt = "png"
 
     wants_resize = max_width > 0 or max_height > 0
     wants_jpeg = fmt in {"jpeg", "jpg"}
+    image = capture_screen_image()
+    working = image.convert("RGB") if wants_jpeg else image.copy()
 
-    if not wants_resize and not wants_jpeg:
-        return source, "image/png"
+    if wants_resize:
+        target_w = max_width or working.width
+        target_h = max_height or working.height
+        working.thumbnail((target_w, target_h), Image.LANCZOS)
 
-    with Image.open(BytesIO(source)) as img:
-        working = img.convert("RGB") if wants_jpeg else img.copy()
+    out = BytesIO()
+    if wants_jpeg:
+        working.save(out, format="JPEG", quality=quality, optimize=True)
+        return out.getvalue(), "image/jpeg"
 
-        if wants_resize:
-            target_w = max_width or working.width
-            target_h = max_height or working.height
-            working.thumbnail((target_w, target_h), Image.LANCZOS)
-
-        out = BytesIO()
-        if wants_jpeg:
-            working.save(out, format="JPEG", quality=quality, optimize=True)
-            return out.getvalue(), "image/jpeg"
-
-        working.save(out, format="PNG", optimize=True)
-        return out.getvalue(), "image/png"
+    working.save(out, format="PNG", optimize=True)
+    return out.getvalue(), "image/png"
 
 
 class ScreenshotHandler(BaseHTTPRequestHandler):
@@ -135,6 +191,7 @@ class ScreenshotHandler(BaseHTTPRequestHandler):
                 {
                     "ok": True,
                     "screen_recording_permission": permission,
+                    "capture_backend": capture_backend_name(),
                 }
             ).encode("utf-8")
             self.send_response(200)
@@ -234,6 +291,7 @@ def main():
     print("  GET /health")
     print("  GET /screenshot")
     print(f"Screen Recording permission granted: {permission}")
+    print(f"Capture backend: {capture_backend_name()}")
     print("If screenshots fail, grant Screen Recording permission to Python/Terminal on Computer B.")
     try:
         server.serve_forever()
