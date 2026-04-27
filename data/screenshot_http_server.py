@@ -1,0 +1,247 @@
+#!/usr/bin/env python3
+"""
+Tiny HTTP screenshot server for Computer B (macOS).
+
+Run on the MacBook:
+  python3 codex/screenshot_http_server.py --host 0.0.0.0 --port 8765
+
+Then on the iMac app, connect to:
+  IP address: 192.168.x.x
+  Port: 8765
+
+Important:
+  The Python app on Computer B must be allowed under macOS Screen Recording.
+"""
+from __future__ import annotations
+
+import argparse
+import ctypes
+import json
+import os
+import subprocess
+import tempfile
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from io import BytesIO
+from urllib.parse import parse_qs, urlparse
+
+from PIL import Image
+
+
+def screen_recording_permission_granted() -> bool | None:
+    """
+    Return whether Screen Recording permission is granted for this process.
+    Returns None when the CoreGraphics preflight API is unavailable.
+    """
+    framework = "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics"
+    try:
+        cg = ctypes.CDLL(framework)
+        preflight = cg.CGPreflightScreenCaptureAccess
+        preflight.restype = ctypes.c_bool
+        return bool(preflight())
+    except Exception:
+        return None
+
+
+def request_screen_recording_access() -> bool | None:
+    """
+    Ask macOS to show the Screen Recording permission prompt when possible.
+    Returns the API result, or None when unavailable.
+    """
+    framework = "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics"
+    try:
+        cg = ctypes.CDLL(framework)
+        request = cg.CGRequestScreenCaptureAccess
+        request.restype = ctypes.c_bool
+        return bool(request())
+    except Exception:
+        return None
+
+
+def capture_png_bytes() -> bytes:
+    fd, path = tempfile.mkstemp(prefix="interview_screen_", suffix=".png")
+    os.close(fd)
+    try:
+        subprocess.run(
+            ["screencapture", "-x", "-t", "png", path],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+        )
+        with open(path, "rb") as f:
+            return f.read()
+    finally:
+        try:
+            os.remove(path)
+        except OSError:
+            pass
+
+
+def _parse_positive_int(value: str | None, default: int, *, minimum: int, maximum: int) -> int:
+    if value is None or value == "":
+        return default
+    try:
+        parsed = int(value)
+    except ValueError:
+        return default
+    return max(minimum, min(maximum, parsed))
+
+
+def build_image_bytes(
+    *,
+    image_format: str = "png",
+    quality: int = 85,
+    max_width: int = 0,
+    max_height: int = 0,
+) -> tuple[bytes, str]:
+    source = capture_png_bytes()
+
+    fmt = (image_format or "png").strip().lower()
+    if fmt not in {"png", "jpeg", "jpg"}:
+        fmt = "png"
+
+    wants_resize = max_width > 0 or max_height > 0
+    wants_jpeg = fmt in {"jpeg", "jpg"}
+
+    if not wants_resize and not wants_jpeg:
+        return source, "image/png"
+
+    with Image.open(BytesIO(source)) as img:
+        working = img.convert("RGB") if wants_jpeg else img.copy()
+
+        if wants_resize:
+            target_w = max_width or working.width
+            target_h = max_height or working.height
+            working.thumbnail((target_w, target_h), Image.LANCZOS)
+
+        out = BytesIO()
+        if wants_jpeg:
+            working.save(out, format="JPEG", quality=quality, optimize=True)
+            return out.getvalue(), "image/jpeg"
+
+        working.save(out, format="PNG", optimize=True)
+        return out.getvalue(), "image/png"
+
+
+class ScreenshotHandler(BaseHTTPRequestHandler):
+    server_version = "InterviewScreenshotHTTP/1.0"
+
+    def do_GET(self):
+        parsed = urlparse(self.path)
+        params = parse_qs(parsed.query)
+
+        if parsed.path == "/health":
+            permission = screen_recording_permission_granted()
+            body = json.dumps(
+                {
+                    "ok": True,
+                    "screen_recording_permission": permission,
+                }
+            ).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(body)
+            return
+
+        if parsed.path == "/screenshot":
+            permission = screen_recording_permission_granted()
+            if permission is False:
+                body = (
+                    "screen recording permission not granted for Python/Terminal on Computer B.\n"
+                    "Open System Settings -> Privacy & Security -> Screen Recording and allow it,\n"
+                    "then restart the screenshot server.\n"
+                ).encode("utf-8")
+                self.send_response(403)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+
+            image_format = (params.get("format", ["png"])[0] or "png").lower()
+            quality = _parse_positive_int(params.get("quality", [None])[0], 85, minimum=40, maximum=95)
+            max_width = _parse_positive_int(params.get("max_width", [None])[0], 0, minimum=0, maximum=7680)
+            max_height = _parse_positive_int(params.get("max_height", [None])[0], 0, minimum=0, maximum=4320)
+
+            try:
+                data, content_type = build_image_bytes(
+                    image_format=image_format,
+                    quality=quality,
+                    max_width=max_width,
+                    max_height=max_height,
+                )
+            except subprocess.CalledProcessError as e:
+                err = e.stderr.decode("utf-8", errors="replace").strip() or str(e)
+                body = f"screencapture failed: {err}\n".encode("utf-8")
+                self.send_response(500)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            except Exception as e:
+                body = f"server error: {e}\n".encode("utf-8")
+                self.send_response(500)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(data)
+            return
+
+        body = b"Not found\n"
+        self.send_response(404)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, format: str, *args):
+        print(f"[HTTP] {self.address_string()} - {format % args}")
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Tiny HTTP screenshot server for macOS.")
+    parser.add_argument("--host", default="0.0.0.0", help="Bind host, default: 0.0.0.0")
+    parser.add_argument("--port", type=int, default=8765, help="Bind port, default: 8765")
+    parser.add_argument(
+        "--request-access",
+        action="store_true",
+        help="Ask macOS to show the Screen Recording permission prompt before starting.",
+    )
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    if args.request_access:
+        result = request_screen_recording_access()
+        print(f"Screen Recording access request result: {result}")
+
+    permission = screen_recording_permission_granted()
+    server = ThreadingHTTPServer((args.host, args.port), ScreenshotHandler)
+    print(f"Screenshot server listening on http://{args.host}:{args.port}")
+    print("Endpoints:")
+    print("  GET /health")
+    print("  GET /screenshot")
+    print(f"Screen Recording permission granted: {permission}")
+    print("If screenshots fail, grant Screen Recording permission to Python/Terminal on Computer B.")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        server.server_close()
+
+
+if __name__ == "__main__":
+    main()
