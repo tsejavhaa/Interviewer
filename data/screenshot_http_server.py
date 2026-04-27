@@ -167,14 +167,14 @@ def build_image_bytes(
     if wants_resize:
         target_w = max_width or working.width
         target_h = max_height or working.height
-        working.thumbnail((target_w, target_h), Image.LANCZOS)
+        working.thumbnail((target_w, target_h), Image.BILINEAR)
 
     out = BytesIO()
     if wants_jpeg:
-        working.save(out, format="JPEG", quality=quality, optimize=True)
+        working.save(out, format="JPEG", quality=quality)
         return out.getvalue(), "image/jpeg"
 
-    working.save(out, format="PNG", optimize=True)
+    working.save(out, format="PNG")
     return out.getvalue(), "image/png"
 
 
